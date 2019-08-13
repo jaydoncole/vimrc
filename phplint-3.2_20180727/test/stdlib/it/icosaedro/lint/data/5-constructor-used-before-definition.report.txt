@@ -1,0 +1,40 @@
+BEGIN parsing of 5-constructor-used-before-definition.php
+1:	<?php
+2:	
+3:	class A {
+4:	
+5:		public static function m(){
+6:			// Using constructor before definition:
+7:			return new self();
+8:		}
+9:	
+10:		public function __construct() {}
+
+		public function __construct() {}
+	                                   \_ HERE
+==== 10: ERROR: the default or inherited constructor was already invoked before definition in line 7. Please, either change the order of the statements or set a 'forward' declaration (PHPLint limitation).
+11:	
+12:	}
+13:	
+14:	
+15:	class B extends A {
+16:	
+17:		public static function m(){
+18:			// Using inherited constructor before definition:
+19:			return new self();
+20:		}
+21:	
+22:		public function __construct() {}
+
+		public function __construct() {}
+	                                   \_ HERE
+==== 22: ERROR: the default or inherited constructor was already invoked before definition in line 19. Please, either change the order of the statements or set a 'forward' declaration (PHPLint limitation).
+23:	
+24:	}
+
+		public function __construct() {}
+	                                   \_ HERE
+==== 22: ERROR: missing call to the parent constructor
+25:	
+END parsing of 5-constructor-used-before-definition.php
+Overall test results: 3 errors, 0 warnings.

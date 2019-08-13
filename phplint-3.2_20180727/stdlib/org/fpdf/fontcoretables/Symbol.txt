@@ -1,0 +1,201 @@
+# Adobe PDF core font: Symbol
+# Columns:
+#    1. Codepoint (hex)
+#    2. WinAnsiEncoding index (hex)
+#    3. Width (hex, units of 1/1000)
+#    4. #Unicode name
+# Sorted by codepoint.
+0020 20 0fa # SPACE	# space
+0021 21 14d # EXCLAMATION MARK	# exclam
+0023 23 1f4 # NUMBER SIGN	# numbersign
+0025 25 341 # PERCENT SIGN	# percent
+0026 26 30a # AMPERSAND	# ampersand
+0028 28 14d # LEFT PARENTHESIS	# parenleft
+0029 29 14d # RIGHT PARENTHESIS	# parenright
+002b 2b 225 # PLUS SIGN	# plus
+002c 2c 0fa # COMMA	# comma
+002e 2e 0fa # FULL STOP	# period
+002f 2f 116 # SOLIDUS	# slash
+0030 30 1f4 # DIGIT ZERO	# zero
+0031 31 1f4 # DIGIT ONE	# one
+0032 32 1f4 # DIGIT TWO	# two
+0033 33 1f4 # DIGIT THREE	# three
+0034 34 1f4 # DIGIT FOUR	# four
+0035 35 1f4 # DIGIT FIVE	# five
+0036 36 1f4 # DIGIT SIX	# six
+0037 37 1f4 # DIGIT SEVEN	# seven
+0038 38 1f4 # DIGIT EIGHT	# eight
+0039 39 1f4 # DIGIT NINE	# nine
+003a 3a 116 # COLON	# colon
+003b 3b 116 # SEMICOLON	# semicolon
+003c 3c 225 # LESS-THAN SIGN	# less
+003d 3d 225 # EQUALS SIGN	# equal
+003e 3e 225 # GREATER-THAN SIGN	# greater
+003f 3f 1bc # QUESTION MARK	# question
+005b 5b 14d # LEFT SQUARE BRACKET	# bracketleft
+005d 5d 14d # RIGHT SQUARE BRACKET	# bracketright
+005f 5f 1f4 # LOW LINE	# underscore
+007b 7b 1e0 # LEFT CURLY BRACKET	# braceleft
+007c 7c 0c8 # VERTICAL LINE	# bar
+007d 7d 1e0 # RIGHT CURLY BRACKET	# braceright
+00a0 20 0fa # NO-BREAK SPACE	# space
+00ac d8 2c9 # NOT SIGN	# logicalnot
+00b0 b0 190 # DEGREE SIGN	# degree
+00b1 b1 225 # PLUS-MINUS SIGN	# plusminus
+00b5 6d 240 # MICRO SIGN	# mu
+00d7 b4 225 # MULTIPLICATION SIGN	# multiply
+00f7 b8 225 # DIVISION SIGN	# divide
+0192 a6 1f4 # LATIN SMALL LETTER F WITH HOOK	# florin
+0391 41 2d2 # GREEK CAPITAL LETTER ALPHA	# Alpha
+0392 42 29b # GREEK CAPITAL LETTER BETA	# Beta
+0393 47 25b # GREEK CAPITAL LETTER GAMMA	# Gamma
+0394 44 264 # GREEK CAPITAL LETTER DELTA	# Delta
+0395 45 263 # GREEK CAPITAL LETTER EPSILON	# Epsilon
+0396 5a 263 # GREEK CAPITAL LETTER ZETA	# Zeta
+0397 48 2d2 # GREEK CAPITAL LETTER ETA	# Eta
+0398 51 2e5 # GREEK CAPITAL LETTER THETA	# Theta
+0399 49 14d # GREEK CAPITAL LETTER IOTA	# Iota
+039a 4b 2d2 # GREEK CAPITAL LETTER KAPPA	# Kappa
+039b 4c 2ae # GREEK CAPITAL LETTER LAMDA	# Lambda
+039c 4d 379 # GREEK CAPITAL LETTER MU	# Mu
+039d 4e 2d2 # GREEK CAPITAL LETTER NU	# Nu
+039e 58 285 # GREEK CAPITAL LETTER XI	# Xi
+039f 4f 2d2 # GREEK CAPITAL LETTER OMICRON	# Omicron
+03a0 50 300 # GREEK CAPITAL LETTER PI	# Pi
+03a1 52 22c # GREEK CAPITAL LETTER RHO	# Rho
+03a3 53 250 # GREEK CAPITAL LETTER SIGMA	# Sigma
+03a4 54 263 # GREEK CAPITAL LETTER TAU	# Tau
+03a5 55 2b2 # GREEK CAPITAL LETTER UPSILON	# Upsilon
+03a6 46 2fb # GREEK CAPITAL LETTER PHI	# Phi
+03a7 43 2d2 # GREEK CAPITAL LETTER CHI	# Chi
+03a8 59 31b # GREEK CAPITAL LETTER PSI	# Psi
+03a9 57 300 # GREEK CAPITAL LETTER OMEGA	# Omega
+03b1 61 277 # GREEK SMALL LETTER ALPHA	# alpha
+03b2 62 225 # GREEK SMALL LETTER BETA	# beta
+03b3 67 19b # GREEK SMALL LETTER GAMMA	# gamma
+03b4 64 1ee # GREEK SMALL LETTER DELTA	# delta
+03b5 65 1b7 # GREEK SMALL LETTER EPSILON	# epsilon
+03b6 7a 1ee # GREEK SMALL LETTER ZETA	# zeta
+03b7 68 25b # GREEK SMALL LETTER ETA	# eta
+03b8 71 209 # GREEK SMALL LETTER THETA	# theta
+03b9 69 149 # GREEK SMALL LETTER IOTA	# iota
+03ba 6b 225 # GREEK SMALL LETTER KAPPA	# kappa
+03bb 6c 225 # GREEK SMALL LETTER LAMDA	# lambda
+03bc 6d 240 # GREEK SMALL LETTER MU	# mu
+03bd 6e 209 # GREEK SMALL LETTER NU	# nu
+03be 78 1ed # GREEK SMALL LETTER XI	# xi
+03bf 6f 225 # GREEK SMALL LETTER OMICRON	# omicron
+03c0 70 225 # GREEK SMALL LETTER PI	# pi
+03c1 72 225 # GREEK SMALL LETTER RHO	# rho
+03c2 56 1b7 # GREEK SMALL LETTER FINAL SIGMA	# sigma1
+03c3 73 25b # GREEK SMALL LETTER SIGMA	# sigma
+03c4 74 1b7 # GREEK SMALL LETTER TAU	# tau
+03c5 75 240 # GREEK SMALL LETTER UPSILON	# upsilon
+03c6 66 209 # GREEK SMALL LETTER PHI	# phi
+03c7 63 225 # GREEK SMALL LETTER CHI	# chi
+03c8 79 2ae # GREEK SMALL LETTER PSI	# psi
+03c9 77 2ae # GREEK SMALL LETTER OMEGA	# omega
+03d1 4a 277 # GREEK THETA SYMBOL	# theta1
+03d2 a1 26c # GREEK UPSILON WITH HOOK SYMBOL	# Upsilon1
+03d5 6a 25b # GREEK PHI SYMBOL	# phi1
+03d6 76 2c9 # GREEK PI SYMBOL	# omega1
+2022 b7 1cc # BULLET	# bullet
+2026 bc 3e8 # HORIZONTAL ELLIPSIS	# ellipsis
+2032 a2 0f7 # PRIME	# minute
+2033 b2 19b # DOUBLE PRIME	# second
+2044 a4 0a7 # FRACTION SLASH	# fraction
+20ac a0 2ee # EURO SIGN	# Euro
+2111 c1 2ae # BLACK-LETTER CAPITAL I	# Ifraktur
+2118 c3 3db # SCRIPT CAPITAL P	# weierstrass
+211c c2 31b # BLACK-LETTER CAPITAL R	# Rfraktur
+2126 57 300 # OHM SIGN	# Omega
+2135 c0 337 # ALEF SYMBOL	# aleph
+2190 ac 3db # LEFTWARDS ARROW	# arrowleft
+2191 ad 25b # UPWARDS ARROW	# arrowup
+2192 ae 3db # RIGHTWARDS ARROW	# arrowright
+2193 af 25b # DOWNWARDS ARROW	# arrowdown
+2194 ab 412 # LEFT RIGHT ARROW	# arrowboth
+21b5 bf 292 # DOWNWARDS ARROW WITH CORNER LEFTWARDS	# carriagereturn
+21d0 dc 3db # LEFTWARDS DOUBLE ARROW	# arrowdblleft
+21d1 dd 25b # UPWARDS DOUBLE ARROW	# arrowdblup
+21d2 de 3db # RIGHTWARDS DOUBLE ARROW	# arrowdblright
+21d3 df 25b # DOWNWARDS DOUBLE ARROW	# arrowdbldown
+21d4 db 412 # LEFT RIGHT DOUBLE ARROW	# arrowdblboth
+2200 22 2c9 # FOR ALL	# universal
+2202 b6 1ee # PARTIAL DIFFERENTIAL	# partialdiff
+2203 24 225 # THERE EXISTS	# existential
+2205 c6 337 # EMPTY SET	# emptyset
+2206 44 264 # INCREMENT	# Delta
+2207 d1 2c9 # NABLA	# gradient
+2208 ce 2c9 # ELEMENT OF	# element
+2209 cf 2c9 # NOT AN ELEMENT OF	# notelement
+220b 27 1b7 # CONTAINS AS MEMBER	# suchthat
+220f d5 337 # N-ARY PRODUCT	# product
+2211 e5 2c9 # N-ARY SUMMATION	# summation
+2212 2d 225 # MINUS SIGN	# minus
+2215 a4 0a7 # DIVISION SLASH	# fraction
+2217 2a 1f4 # ASTERISK OPERATOR	# asteriskmath
+221a d6 225 # SQUARE ROOT	# radical
+221d b5 2c9 # PROPORTIONAL TO	# proportional
+221e a5 2c9 # INFINITY	# infinity
+2220 d0 300 # ANGLE	# angle
+2227 d9 25b # LOGICAL AND	# logicaland
+2228 da 25b # LOGICAL OR	# logicalor
+2229 c7 300 # INTERSECTION	# intersection
+222a c8 300 # UNION	# union
+222b f2 112 # INTEGRAL	# integral
+2234 5c 35f # THEREFORE	# therefore
+223c 7e 225 # TILDE OPERATOR	# similar
+2245 40 225 # APPROXIMATELY EQUAL TO	# congruent
+2248 bb 225 # ALMOST EQUAL TO	# approxequal
+2260 b9 225 # NOT EQUAL TO	# notequal
+2261 ba 225 # IDENTICAL TO	# equivalence
+2264 a3 225 # LESS-THAN OR EQUAL TO	# lessequal
+2265 b3 225 # GREATER-THAN OR EQUAL TO	# greaterequal
+2282 cc 2c9 # SUBSET OF	# propersubset
+2283 c9 2c9 # SUPERSET OF	# propersuperset
+2284 cb 2c9 # NOT A SUBSET OF	# notsubset
+2286 cd 2c9 # SUBSET OF OR EQUAL TO	# reflexsubset
+2287 ca 2c9 # SUPERSET OF OR EQUAL TO	# reflexsuperset
+2295 c5 300 # CIRCLED PLUS	# circleplus
+2297 c4 300 # CIRCLED TIMES	# circlemultiply
+22a5 5e 292 # UP TACK	# perpendicular
+22c5 d7 0fa # DOT OPERATOR	# dotmath
+2320 f3 2ae # TOP HALF INTEGRAL	# integraltp
+2321 f5 2ae # BOTTOM HALF INTEGRAL	# integralbt
+2329 e1 149 # LEFT-POINTING ANGLE BRACKET	# angleleft
+232a f1 149 # RIGHT-POINTING ANGLE BRACKET	# angleright
+25ca e0 1ee # LOZENGE	# lozenge
+2660 aa 2f1 # BLACK SPADE SUIT	# spade
+2663 a7 2f1 # BLACK CLUB SUIT	# club
+2665 a9 2f1 # BLACK HEART SUIT	# heart
+2666 a8 2f1 # BLACK DIAMOND SUIT	# diamond
+f6d9 d3 316 # COPYRIGHT SIGN SERIF	# copyrightserif (CUS)
+f6da d2 316 # REGISTERED SIGN SERIF	# registerserif (CUS)
+f6db d4 37a # TRADE MARK SIGN SERIF	# trademarkserif (CUS)
+f8e5 60 1f4 # RADICAL EXTENDER	# radicalex (CUS)
+f8e6 bd 25b # VERTICAL ARROW EXTENDER	# arrowvertex (CUS)
+f8e7 be 3e8 # HORIZONTAL ARROW EXTENDER	# arrowhorizex (CUS)
+f8e8 e2 316 # REGISTERED SIGN SANS SERIF	# registersans (CUS)
+f8e9 e3 316 # COPYRIGHT SIGN SANS SERIF	# copyrightsans (CUS)
+f8ea e4 312 # TRADE MARK SIGN SANS SERIF	# trademarksans (CUS)
+f8eb e6 180 # LEFT PAREN TOP	# parenlefttp (CUS)
+f8ec e7 180 # LEFT PAREN EXTENDER	# parenleftex (CUS)
+f8ed e8 180 # LEFT PAREN BOTTOM	# parenleftbt (CUS)
+f8ee e9 180 # LEFT SQUARE BRACKET TOP	# bracketlefttp (CUS)
+f8ef ea 180 # LEFT SQUARE BRACKET EXTENDER	# bracketleftex (CUS)
+f8f0 eb 180 # LEFT SQUARE BRACKET BOTTOM	# bracketleftbt (CUS)
+f8f1 ec 1ee # LEFT CURLY BRACKET TOP	# bracelefttp (CUS)
+f8f2 ed 1ee # LEFT CURLY BRACKET MID	# braceleftmid (CUS)
+f8f3 ee 1ee # LEFT CURLY BRACKET BOTTOM	# braceleftbt (CUS)
+f8f4 ef 1ee # CURLY BRACKET EXTENDER	# braceex (CUS)
+f8f5 f4 2ae # INTEGRAL EXTENDER	# integralex (CUS)
+f8f6 f6 180 # RIGHT PAREN TOP	# parenrighttp (CUS)
+f8f7 f7 180 # RIGHT PAREN EXTENDER	# parenrightex (CUS)
+f8f8 f8 180 # RIGHT PAREN BOTTOM	# parenrightbt (CUS)
+f8f9 f9 180 # RIGHT SQUARE BRACKET TOP	# bracketrighttp (CUS)
+f8fa fa 180 # RIGHT SQUARE BRACKET EXTENDER	# bracketrightex (CUS)
+f8fb fb 180 # RIGHT SQUARE BRACKET BOTTOM	# bracketrightbt (CUS)
+f8fc fc 1ee # RIGHT CURLY BRACKET TOP	# bracerighttp (CUS)
+f8fd fd 1ee # RIGHT CURLY BRACKET MID	# bracerightmid (CUS)
+f8fe fe 1ee # RIGHT CURLY BRACKET BOTTOM	# bracerightbt (CUS)

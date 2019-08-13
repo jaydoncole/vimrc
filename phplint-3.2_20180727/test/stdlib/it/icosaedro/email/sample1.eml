@@ -1,0 +1,116 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+FCC: mailbox://salsi@icosrv.icosaedro.it/Inbox
+X-Identity-Key: id1
+X-Account-Key: account1
+BCC: salsi@icosaedro.it
+From: Umberto Salsi <salsi@icosaedro.it>
+Subject: =?UTF-8?Q?EmlParse_cl=c3=a0ss_t=c3=a8sting_sample_1?=
+To: =?UTF-8?Q?R=c3=a8cipient1?= <recipient1@icosaedro.it>,
+ =?UTF-8?Q?R=c3=a8cipient2?= <recipient2@icosaedro.it>
+Cc: recipient3@icosaedro.it
+Message-ID: <c2759229-76f6-e9ff-e3ed-550d50920e79@icosaedro.it>
+Openpgp: preference=signencrypt
+X-Enigmail-Draft-Status: N11100
+Date: Tue, 3 Jul 2018 13:41:24 +0200
+X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
+ attachmentreminder=0; deliveryformat=4
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------D6BA0485CB6618A2C6DF65E0"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------D6BA0485CB6618A2C6DF65E0
+Content-Type: multipart/related;
+ boundary="------------EF97C96BFDF296C39D22D453"
+
+
+--------------EF97C96BFDF296C39D22D453
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    This message is sent both as <u>plain text</u> and <u>HTML</u>.<br>
+    <br>
+    <div align="center"><img moz-do-not-send="false"
+        src="cid:part1.CEA9FCDA.743F5BD8@icosaedro.it" alt=""
+        height="32" width="32"><br>
+    </div>
+    <br>
+    An in-line content is added as the <u>image </u>above.<br>
+    <br>
+    A small <u>attachment </u>file is also added with a file name very
+    long and containing non-ASCII characters.<br>
+    <br>
+  </body>
+</html>
+
+--------------EF97C96BFDF296C39D22D453
+Content-Type: image/png;
+ name="phplint.png"
+Content-Transfer-Encoding: base64
+Content-ID: <part1.CEA9FCDA.743F5BD8@icosaedro.it>
+Content-Disposition: inline;
+ filename="phplint.png"
+
+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
+--------------EF97C96BFDF296C39D22D453--
+
+--------------D6BA0485CB6618A2C6DF65E0
+Content-Type: text/plain; charset=UTF-8;
+ name="=?UTF-8?Q?WayTooLongFileNameWithNonASCIICharactersLike=c3=a0=c3=a8?=
+ =?UTF-8?Q?=c3=ac=c3=b2=c3=b9-WayTooLongFileNameWithNonASCIICharacters?=
+ =?UTF-8?B?TGlrZcOgw6jDrMOyw7kudHh0?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0*=utf-8''%57%61%79%54%6F%6F%4C%6F%6E%67%46%69%6C%65%4E%61%6D%65;
+ filename*1*=%57%69%74%68%4E%6F%6E%41%53%43%49%49%43%68%61%72%61%63%74%65;
+ filename*2*=%72%73%4C%69%6B%65%C3%A0%C3%A8%C3%AC%C3%B2%C3%B9%2D%57%61%79;
+ filename*3*=%54%6F%6F%4C%6F%6E%67%46%69%6C%65%4E%61%6D%65%57%69%74%68%4E;
+ filename*4*=%6F%6E%41%53%43%49%49%43%68%61%72%61%63%74%65%72%73%4C%69%6B;
+ filename*5*=%65%C3%A0%C3%A8%C3%AC%C3%B2%C3%B9%2E%74%78%74
+
+U2FtcGxlMSwgbGluZSAxLg0KU2FtcGxlMSwgbGluZTIuDQo=
+--------------D6BA0485CB6618A2C6DF65E0--

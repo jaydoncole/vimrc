@@ -1,0 +1,248 @@
+<HTML>
+<HEAD>
+<TITLE>PHPLint Reference Manual</TITLE>
+<META name=description content="PHPLint Reference Manual">
+<META name=author      content="icosaedro.it di Umberto Salsi">
+<META HTTP-EQUIV="Content-Language"    content="en">
+<LINK rel=stylesheet type='text/css' href='../styles.css'>
+<script type="text/javascript" src="../utils.js"></script>
+</HEAD><BODY onload="buildTOC('toc');">
+
+<h2 id="toc">Autoloading classes</h2>
+
+<p>
+The "magic" autoload.php module available under the stdlib directory enables
+automatic loading of class at run time when the PHP interpreter encounters an
+unknown class. But the magic autoload.php module also tells to PHPLint the
+class autoloading mechanism is enabled and how the fully qualified name of a
+class can be translated into a file path. We now explain exactly when PHPLint
+and PHP trigger class autoloading because there are some differences you should
+be aware of.
+</p>
+
+<p>
+As a general rule, PHPLint triggers class autoloading (when enabled by the
+autoload.phpmodule) anywhere an unknown class
+is found in the source code, including PHPLint meta-code and DocBlocks, with
+the only exclusion of some very special functions that are listed below in the
+table. PHP, instead, triggers class autoloading only in some contexts where
+this is really necessary for the correct execution of the program. The
+following table lists all the cases in which class autoloading is triggered,
+also specifying when only PHPLint or only PHP perform class autoloading and
+not both.
+</p>
+
+
+<pre>
+</pre>
+<table border=1 cellspacing=0 cellpadding=7>
+
+<tr>
+<th width="30%">Case</th>
+<th>Example</th>
+</tr>
+
+
+<tr>
+<td valign=top>
+Creating a new object from an undefined class.
+</td>
+<td valign=top>
+<code>$obj = new <b>UndefinedClass</b>();</code>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+Extending or implementing undefined classes.
+</td>
+<td valign=top>
+<code>class MyClass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;extends <b>UndefinedClass1</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;implements <b>UndefinedClass2</b> { ... }</code>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+On type hinting of argument of function or method (PHPLint always; PHP only
+if the function or method is called AND that argument has no default value, as
+in the case of the <tt>f()</tt> function in the example).
+<p>NOTE. Type hinting should be avoided because PHP raises a
+	fatal error if the actual value passed is NULL, which is a behavior
+	incompatible with model type of PHPLint where NULL is a perfectly legal
+	value for an object.
+</td>
+<td valign=top>
+<pre>
+function f(<b>UndefClass</b> $obj)
+{ ... }
+
+function g(<b>UndefClass</b> $obj = NULL)
+{ ... }
+
+class MyClass
+{
+    function aMethod(<b>UndefClass</b> $obj)
+    { ... }
+}
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+Accessing to static members of undefined classes.
+</td>
+<td valign=top>
+<pre>
+$n = <b>UndefClass1</b>::SOME_CONST;
+<b>UndefClass2</b>::aMehtod();
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+Testing if a variable contains an object instance of a given class
+(PHPLint only).
+</td>
+<td valign=top>
+<pre>
+if( $o instanceof <b>UndefClass</b> ) ...
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+Checking if a class or interface does exist (PHP only). The second argument
+allows to perform the test disabling autoloading.
+</td>
+<td valign=top>
+<pre>
+if( class_exists("MyClass", FALSE) )...
+if( interface_exists("MyIF", FALSE) )...
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+In <code>catch</code> brances (PHPLint only).
+(PHPLint only).
+</td>
+<td valign=top>
+<pre>
+try { ... } catch(<b>UndefClass</b> $e){ ... }
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+When the name of the undefined class appears in PHPLint meta-code:
+signature of function or method; type of a variable or property;
+formal type-cast; forward declaration of functions, classes and methods
+when a reference to an undefined class occurs; /*.throws.*/ declaration.
+PHPLint only.
+</td>
+<td valign=top>
+<pre>
+/*. <b>UndefClass1</b> .*/ function f(/*. <b>UndefClass2</b> .*/ $obj)
+{
+    ...
+}
+
+/*. forward class MyClass extends <b>UndefClass</b>
+{
+    void function aMethod()
+        throws <b>UndefException1</b>, <b>UndefException2</b>;
+}
+.*/
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td valign=top>
+In DocBlocks when the name of an unknown class appears in a <code>{@link}</code>
+in-line tag, a <code>@param</code> line tag or a <code>@param</code> line tag.
+PHPLint only.
+</td>
+<td valign=top>
+<pre>
+/**
+ * Returns the next available book in {@link <b>Bookstore</b>}.
+ * @param <b>Bookstore</b> $bs  The bookstore.
+ * @return <b>Book</b>          Next book, or NULL if not available.
+ */
+function nextBook($bs)
+{
+    ...<br>
+}
+</pre>
+</td>
+</tr>
+
+<tr>
+<td valign=top>
+When the <code>cast()</code> magic function requires a class.
+PHPLint only.
+</td>
+<td valign=top>
+<pre>
+$project = cast("<b>Project</b>", $a_mixed_value);
+$users = cast("<b>User</b>[int]", $another_mixed_value);
+</pre>
+</td>
+</tr>
+
+<tr>
+<td valign=top>
+Unserializing data. Any object that appear in the unserialized data
+contains the name of the class to which it belongs, so that the definition
+of that class can be automatically loaded.
+PHP only.
+</td>
+<td valign=top>
+<pre>
+$a_mixed_value = unserialize($serialized_data);
+</pre>
+</td>
+</tr>
+
+<tr>
+<td valign=top>
+Restoring the HTTP session.
+PHP only.
+</td>
+<td valign=top>
+<pre>
+session_start();
+</pre>
+</td>
+</tr>
+
+</table>
+<pre>
+</pre>
+
+<p>
+There are also some special functions that may trigger class autoloading:
+<tt>class_implements()</tt>, <tt>class_parents()</tt>,
+<tt>spl_autoload_*()</tt>. Please note that <b>these functions are not
+supported by PHPLint, in the sense that PHPLint does not parse nor autoload the
+indicated classes.</b>
+</p>
+
+</body>
+</html>

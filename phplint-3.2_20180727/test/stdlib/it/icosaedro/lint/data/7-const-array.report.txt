@@ -1,0 +1,25 @@
+BEGIN parsing of 7-const-array.php
+1:	<?php
+2:	
+3:	define("CA1", [1,2,3]);
+4:	
+5:	const
+6:		CA2 = [1,2,3],
+7:		CA3 = [[9]],
+8:		HEX = "0123456789abcdef";
+9:	
+10:	echo CA1[0];
+11:	echo CA2[0];
+12:	echo CA3[0][0];
+13:	echo HEX[15];
+14:	
+15:	class C1 {
+16:		const CA4 = [1,2,3], CA5 = [[99]];
+17:	
+18:		static function m() { echo self::CA4[2], self::CA5[0][0]; }
+19:	}
+20:	
+21:	echo C1::CA4[0], C1::CA5[0][0];
+22:	C1::m();
+END parsing of 7-const-array.php
+Overall test results: 0 errors, 0 warnings.

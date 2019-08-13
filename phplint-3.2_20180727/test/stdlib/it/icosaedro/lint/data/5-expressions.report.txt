@@ -1,0 +1,24 @@
+BEGIN parsing of 5-expressions.php
+1:	<?php
+2:	
+3:	// Ternary operator is left-associative, that is
+4:	//     A?B:C?D:E
+5:	// is evaluated as
+6:	//     (A?B:C)?D:E
+7:	// Use flow analysis to detect which case holds:
+8:	if ((true ? false : true ? 1 : 2) == 2)
+9:		$gotTrue = 0;
+10:	else
+11:		$gotFalse = 0;
+12:	echo $gotTrue, $gotFalse;
+
+	echo $gotTrue, $gotFalse;
+	                        \_ HERE
+==== 12: ERROR: variable $gotFalse might not have been assigned
+13:	// Possible results:
+14:	// $gotTrue undefined: expression evaluated FALSE
+15:	// $gotFalse undefined: expression evaluated TRUE
+16:	// bot undefined: expression can't be statically evaluated
+17:	// Expected result: expression evaluates to TRUE, then $gotFalse undef
+END parsing of 5-expressions.php
+Overall test results: 1 errors, 0 warnings.

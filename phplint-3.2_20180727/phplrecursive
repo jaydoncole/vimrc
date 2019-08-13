@@ -1,0 +1,15 @@
+#!/bin/sh
+# Applies phpl to all the .php files of the current directory, recursively.
+# Set your preferred options here once for all, and check periodically
+# your code base.
+find . -name '*.php'  \
+| while read f; do
+	phpl \
+		--php-version 7 \
+		--print-file-name \
+		--print-path relative \
+		--no-print-notices \
+		--no-print-source \
+		--no-overall \
+		$f
+done

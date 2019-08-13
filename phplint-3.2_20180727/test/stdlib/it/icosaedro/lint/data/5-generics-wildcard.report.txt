@@ -1,0 +1,1030 @@
+BEGIN parsing of 5-generics-wildcard.php
+1:	<?php require_once __DIR__ . "/../../../../../../stdlib/cast.php";
+2:	
+3:	class Box/*. <T> .*/ {
+4:		private /*. T .*/ $v;
+5:		function __construct(/*. T .*/ $v) { $this->v = $v; }
+6:		function get(){  return $this->v; }
+7:		function set(/*. T .*/ $v) { $this->v = $v; }
+8:	}
+9:	
+10:	class A {}
+11:	class B extends A {}
+12:	class C extends B {}
+13:	class Z {}
+14:	
+15:	function f(/*. Box<?> .*/ $box) {
+16:		/*. object .*/ $o = $box->get();
+17:		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                                   \_ HERE
+==== 17: ERROR: cannot assign ? to $a of type A
+18:		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+
+		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+	                                   \_ HERE
+==== 18: ERROR: cannot assign ? to $b of type B
+19:		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                                   \_ HERE
+==== 19: ERROR: cannot assign ? to $c of type C
+20:		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                                   \_ HERE
+==== 20: ERROR: cannot assign ? to $z of type Z
+21:		$box->set(new A());
+
+		$box->set(new A());
+	                          \_ HERE
+==== 21: ERROR: calling Box<?>::set declared in line 7, argument no. 1: found type A is not assignment compatible with $v of type ?
+22:		$box->set(new B());
+
+		$box->set(new B());
+	                          \_ HERE
+==== 22: ERROR: calling Box<?>::set declared in line 7, argument no. 1: found type B is not assignment compatible with $v of type ?
+23:		$box->set(new C());
+
+		$box->set(new C());
+	                          \_ HERE
+==== 23: ERROR: calling Box<?>::set declared in line 7, argument no. 1: found type C is not assignment compatible with $v of type ?
+24:		$box->set(new Z());
+
+		$box->set(new Z());
+	                          \_ HERE
+==== 24: ERROR: calling Box<?>::set declared in line 7, argument no. 1: found type Z is not assignment compatible with $v of type ?
+25:	}
+26:	
+27:	function g(/*. Box<? extends B> .*/ $box) {
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                    \_ HERE
+==== 20: notice: variable $z assigned but never used
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                    \_ HERE
+==== 19: notice: variable $c assigned but never used
+
+		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+	                    \_ HERE
+==== 18: notice: variable $b assigned but never used
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                    \_ HERE
+==== 17: notice: variable $a assigned but never used
+
+		/*. object .*/ $o = $box->get();
+	                         \_ HERE
+==== 16: notice: variable $o assigned but never used
+28:		/*. object .*/ $o = $box->get();
+29:		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                                                                    \_ HERE
+==== 29: ERROR: forbidden cast from ? extends B to A
+30:		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+31:		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                                   \_ HERE
+==== 31: ERROR: cannot assign ? extends B to $c of type C
+32:		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                                   \_ HERE
+==== 32: ERROR: cannot assign ? extends B to $z of type Z
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                                                                    \_ HERE
+==== 32: ERROR: forbidden cast from ? extends B to Z
+33:		$box->set(new A());
+
+		$box->set(new A());
+	                          \_ HERE
+==== 33: ERROR: calling Box<? extends B>::set declared in line 7, argument no. 1: found type A is not assignment compatible with $v of type ? extends B
+34:		$box->set(new B());
+
+		$box->set(new B());
+	                          \_ HERE
+==== 34: ERROR: calling Box<? extends B>::set declared in line 7, argument no. 1: found type B is not assignment compatible with $v of type ? extends B
+35:		$box->set(new C());
+
+		$box->set(new C());
+	                          \_ HERE
+==== 35: ERROR: calling Box<? extends B>::set declared in line 7, argument no. 1: found type C is not assignment compatible with $v of type ? extends B
+36:		$box->set(new Z());
+
+		$box->set(new Z());
+	                          \_ HERE
+==== 36: ERROR: calling Box<? extends B>::set declared in line 7, argument no. 1: found type Z is not assignment compatible with $v of type ? extends B
+37:	}
+38:	
+39:	function h(/*. Box<? parent B> .*/ $box) {
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                    \_ HERE
+==== 32: notice: variable $z assigned but never used
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                    \_ HERE
+==== 31: notice: variable $c assigned but never used
+
+		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+	                    \_ HERE
+==== 30: notice: variable $b assigned but never used
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                    \_ HERE
+==== 29: notice: variable $a assigned but never used
+
+		/*. object .*/ $o = $box->get();
+	                         \_ HERE
+==== 28: notice: variable $o assigned but never used
+40:		/*. object .*/ $o = $box->get();
+41:		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                                   \_ HERE
+==== 41: ERROR: cannot assign ? parent B to $a of type A
+42:		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+
+		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+	                                   \_ HERE
+==== 42: ERROR: cannot assign ? parent B to $b of type B
+43:		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                                   \_ HERE
+==== 43: ERROR: cannot assign ? parent B to $c of type C
+44:		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                                   \_ HERE
+==== 44: ERROR: cannot assign ? parent B to $z of type Z
+45:		$box->set(new A());
+
+		$box->set(new A());
+	                          \_ HERE
+==== 45: ERROR: calling Box<? parent B>::set declared in line 7, argument no. 1: found type A is not assignment compatible with $v of type ? parent B
+46:		$box->set(new B());
+47:		$box->set(new C());
+48:		$box->set(new Z());
+
+		$box->set(new Z());
+	                          \_ HERE
+==== 48: ERROR: calling Box<? parent B>::set declared in line 7, argument no. 1: found type Z is not assignment compatible with $v of type ? parent B
+49:	}
+50:	
+51:	f(NULL);
+
+		/*. Z .*/ $z = $box->get(); $z = cast(Z::class, $box->get());
+	                    \_ HERE
+==== 44: notice: variable $z assigned but never used
+
+		/*. C .*/ $c = $box->get(); $c = cast(C::class, $box->get());
+	                    \_ HERE
+==== 43: notice: variable $c assigned but never used
+
+		/*. B .*/ $b = $box->get(); $b = cast(B::class, $box->get());
+	                    \_ HERE
+==== 42: notice: variable $b assigned but never used
+
+		/*. A .*/ $a = $box->get(); $a = cast(A::class, $box->get());
+	                    \_ HERE
+==== 41: notice: variable $a assigned but never used
+
+		/*. object .*/ $o = $box->get();
+	                         \_ HERE
+==== 40: notice: variable $o assigned but never used
+52:	g(NULL);
+53:	h(NULL);
+54:	
+55:	f(new Box/*.<A>.*/(NULL));
+56:	f(new Box/*.<B>.*/(NULL));
+57:	f(new Box/*.<C>.*/(NULL));
+58:	f(new Box/*.<Z>.*/(NULL));
+59:	
+60:	g(new Box/*.<A>.*/(NULL));
+
+	g(new Box/*.<A>.*/(NULL));
+	                         \_ HERE
+==== 60: ERROR: calling g declared in line 27, argument no. 1: found type Box<A> is not assignment compatible with $box of type Box<? extends B>
+61:	g(new Box/*.<B>.*/(NULL));
+62:	g(new Box/*.<C>.*/(NULL));
+63:	g(new Box/*.<Z>.*/(NULL));
+
+	g(new Box/*.<Z>.*/(NULL));
+	                         \_ HERE
+==== 63: ERROR: calling g declared in line 27, argument no. 1: found type Box<Z> is not assignment compatible with $box of type Box<? extends B>
+64:	
+65:	h(new Box/*.<A>.*/(NULL));
+66:	h(new Box/*.<B>.*/(NULL));
+67:	h(new Box/*.<C>.*/(NULL));
+
+	h(new Box/*.<C>.*/(NULL));
+	                         \_ HERE
+==== 67: ERROR: calling h declared in line 39, argument no. 1: found type Box<C> is not assignment compatible with $box of type Box<? parent B>
+68:	h(new Box/*.<Z>.*/(NULL));
+
+	h(new Box/*.<Z>.*/(NULL));
+	                         \_ HERE
+==== 68: ERROR: calling h declared in line 39, argument no. 1: found type Box<Z> is not assignment compatible with $box of type Box<? parent B>
+69:	
+70:	function assignment_rules() {
+71:	
+72:		/*. Box<?> .*/ $a1 = /*.(Box<?>).*/ NULL; // ok
+73:		/*. Box<?> .*/ $a2 = /*.(Box<? extends object>).*/ NULL; // ok
+74:		/*. Box<?> .*/ $a3 = /*.(Box<? extends B>).*/ NULL; // ok
+75:		/*. Box<?> .*/ $a4 = /*.(Box<? parent object>).*/ NULL; // ok
+76:		/*. Box<?> .*/ $a5 = /*.(Box<? parent B>).*/ NULL; // ok
+77:		/*. Box<?> .*/ $a6 = /*.(Box<object>).*/ NULL; // ok
+78:		/*. Box<?> .*/ $a7 = /*.(Box<A>).*/ NULL; // ok
+79:		/*. Box<?> .*/ $a8 = /*.(Box<B>).*/ NULL; // ok
+80:		/*. Box<?> .*/ $a9 = /*.(Box<C>).*/ NULL; // ok
+81:		/*. Box<?> .*/ $a0 = /*.(Box<Z>).*/ NULL; // ok
+82:	
+83:		/*. Box<? extends object> .*/ $b1 = /*.(Box<?>).*/ NULL; // ok
+84:		/*. Box<? extends object> .*/ $b2 = /*.(Box<? extends object>).*/ NULL; // ok
+85:		/*. Box<? extends object> .*/ $b3 = /*.(Box<? extends B>).*/ NULL; // ok
+86:		/*. Box<? extends object> .*/ $b4 = /*.(Box<? parent object>).*/ NULL; // ok
+87:		/*. Box<? extends object> .*/ $b5 = /*.(Box<? parent B>).*/ NULL; // ok
+88:		/*. Box<? extends object> .*/ $b6 = /*.(Box<object>).*/ NULL; // ok
+89:		/*. Box<? extends object> .*/ $b7 = /*.(Box<A>).*/ NULL; // ok
+90:		/*. Box<? extends object> .*/ $b8 = /*.(Box<B>).*/ NULL; // ok
+91:		/*. Box<? extends object> .*/ $b9 = /*.(Box<C>).*/ NULL; // ok
+92:		/*. Box<? extends object> .*/ $b0 = /*.(Box<Z>).*/ NULL; // ok
+93:	
+94:		/*. Box<? extends B> .*/ $c1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 94: ERROR: cannot assign Box<?> to $c1 of type Box<? extends B>
+95:		/*. Box<? extends B> .*/ $c2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                          \_ HERE
+==== 95: ERROR: cannot assign Box<?> to $c2 of type Box<? extends B>
+96:		/*. Box<? extends B> .*/ $c3 = /*.(Box<? extends B>).*/ NULL; // ok
+97:		/*. Box<? extends B> .*/ $c4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                                         \_ HERE
+==== 97: ERROR: cannot assign Box<? parent object> to $c4 of type Box<? extends B>
+98:		/*. Box<? extends B> .*/ $c5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                                    \_ HERE
+==== 98: ERROR: cannot assign Box<? parent B> to $c5 of type Box<? extends B>
+99:		/*. Box<? extends B> .*/ $c6 = /*.(Box<object>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c6 = /*.(Box<object>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 99: ERROR: cannot assign Box<object> to $c6 of type Box<? extends B>
+100:		/*. Box<? extends B> .*/ $c7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 100: ERROR: cannot assign Box<A> to $c7 of type Box<? extends B>
+101:		/*. Box<? extends B> .*/ $c8 = /*.(Box<B>).*/ NULL; // ok
+102:		/*. Box<? extends B> .*/ $c9 = /*.(Box<C>).*/ NULL; // ok
+103:		/*. Box<? extends B> .*/ $c0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<? extends B> .*/ $c0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 103: ERROR: cannot assign Box<Z> to $c0 of type Box<? extends B>
+104:	
+105:		/*. Box<? parent object> .*/ $d1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 105: ERROR: cannot assign Box<?> to $d1 of type Box<? parent object>
+106:		/*. Box<? parent object> .*/ $d2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                              \_ HERE
+==== 106: ERROR: cannot assign Box<?> to $d2 of type Box<? parent object>
+107:		/*. Box<? parent object> .*/ $d3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                                         \_ HERE
+==== 107: ERROR: cannot assign Box<? extends B> to $d3 of type Box<? parent object>
+108:		/*. Box<? parent object> .*/ $d4 = /*.(Box<? parent object>).*/ NULL; // ok
+109:		/*. Box<? parent object> .*/ $d5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                                        \_ HERE
+==== 109: ERROR: cannot assign Box<? parent B> to $d5 of type Box<? parent object>
+110:		/*. Box<? parent object> .*/ $d6 = /*.(Box<object>).*/ NULL; // ok
+111:		/*. Box<? parent object> .*/ $d7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 111: ERROR: cannot assign Box<A> to $d7 of type Box<? parent object>
+112:		/*. Box<? parent object> .*/ $d8 = /*.(Box<B>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d8 = /*.(Box<B>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 112: ERROR: cannot assign Box<B> to $d8 of type Box<? parent object>
+113:		/*. Box<? parent object> .*/ $d9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 113: ERROR: cannot assign Box<C> to $d9 of type Box<? parent object>
+114:		/*. Box<? parent object> .*/ $d0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<? parent object> .*/ $d0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 114: ERROR: cannot assign Box<Z> to $d0 of type Box<? parent object>
+115:	
+116:		/*. Box<? parent B> .*/ $e1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<? parent B> .*/ $e1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 116: ERROR: cannot assign Box<?> to $e1 of type Box<? parent B>
+117:		/*. Box<? parent B> .*/ $e2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<? parent B> .*/ $e2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                         \_ HERE
+==== 117: ERROR: cannot assign Box<?> to $e2 of type Box<? parent B>
+118:		/*. Box<? parent B> .*/ $e3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<? parent B> .*/ $e3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                                    \_ HERE
+==== 118: ERROR: cannot assign Box<? extends B> to $e3 of type Box<? parent B>
+119:		/*. Box<? parent B> .*/ $e4 = /*.(Box<? parent object>).*/ NULL; // ok
+120:		/*. Box<? parent B> .*/ $e5 = /*.(Box<? parent B>).*/ NULL; // ok
+121:		/*. Box<? parent B> .*/ $e6 = /*.(Box<object>).*/ NULL; // ok
+122:		/*. Box<? parent B> .*/ $e7 = /*.(Box<A>).*/ NULL; // ok
+123:		/*. Box<? parent B> .*/ $e8 = /*.(Box<B>).*/ NULL; // ok
+124:		/*. Box<? parent B> .*/ $e9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<? parent B> .*/ $e9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 124: ERROR: cannot assign Box<C> to $e9 of type Box<? parent B>
+125:		/*. Box<? parent B> .*/ $e0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<? parent B> .*/ $e0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 125: ERROR: cannot assign Box<Z> to $e0 of type Box<? parent B>
+126:	
+127:		/*. Box<object> .*/ $f1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 127: ERROR: cannot assign Box<?> to $f1 of type Box<object>
+128:		/*. Box<object> .*/ $f2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                     \_ HERE
+==== 128: ERROR: cannot assign Box<?> to $f2 of type Box<object>
+129:		/*. Box<object> .*/ $f3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 129: ERROR: cannot assign Box<? extends B> to $f3 of type Box<object>
+130:		/*. Box<object> .*/ $f4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                                    \_ HERE
+==== 130: ERROR: cannot assign Box<? parent object> to $f4 of type Box<object>
+131:		/*. Box<object> .*/ $f5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 131: ERROR: cannot assign Box<? parent B> to $f5 of type Box<object>
+132:		/*. Box<object> .*/ $f6 = /*.(Box<object>).*/ NULL; // ok
+133:		/*. Box<object> .*/ $f7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 133: ERROR: cannot assign Box<A> to $f7 of type Box<object>
+134:		/*. Box<object> .*/ $f8 = /*.(Box<B>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f8 = /*.(Box<B>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 134: ERROR: cannot assign Box<B> to $f8 of type Box<object>
+135:		/*. Box<object> .*/ $f9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 135: ERROR: cannot assign Box<C> to $f9 of type Box<object>
+136:		/*. Box<object> .*/ $f0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<object> .*/ $f0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 136: ERROR: cannot assign Box<Z> to $f0 of type Box<object>
+137:	
+138:		/*. Box<A> .*/ $g1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 138: ERROR: cannot assign Box<?> to $g1 of type Box<A>
+139:		/*. Box<A> .*/ $g2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 139: ERROR: cannot assign Box<?> to $g2 of type Box<A>
+140:		/*. Box<A> .*/ $g3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 140: ERROR: cannot assign Box<? extends B> to $g3 of type Box<A>
+141:		/*. Box<A> .*/ $g4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 141: ERROR: cannot assign Box<? parent object> to $g4 of type Box<A>
+142:		/*. Box<A> .*/ $g5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 142: ERROR: cannot assign Box<? parent B> to $g5 of type Box<A>
+143:		/*. Box<A> .*/ $g6 = /*.(Box<object>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g6 = /*.(Box<object>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 143: ERROR: cannot assign Box<object> to $g6 of type Box<A>
+144:		/*. Box<A> .*/ $g7 = /*.(Box<A>).*/ NULL; // ok
+145:		/*. Box<A> .*/ $g8 = /*.(Box<B>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g8 = /*.(Box<B>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 145: ERROR: cannot assign Box<B> to $g8 of type Box<A>
+146:		/*. Box<A> .*/ $g9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 146: ERROR: cannot assign Box<C> to $g9 of type Box<A>
+147:		/*. Box<A> .*/ $g0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<A> .*/ $g0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 147: ERROR: cannot assign Box<Z> to $g0 of type Box<A>
+148:	
+149:		/*. Box<B> .*/ $h1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 149: ERROR: cannot assign Box<?> to $h1 of type Box<B>
+150:		/*. Box<B> .*/ $h2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 150: ERROR: cannot assign Box<?> to $h2 of type Box<B>
+151:		/*. Box<B> .*/ $h3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 151: ERROR: cannot assign Box<? extends B> to $h3 of type Box<B>
+152:		/*. Box<B> .*/ $h4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 152: ERROR: cannot assign Box<? parent object> to $h4 of type Box<B>
+153:		/*. Box<B> .*/ $h5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 153: ERROR: cannot assign Box<? parent B> to $h5 of type Box<B>
+154:		/*. Box<B> .*/ $h6 = /*.(Box<object>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h6 = /*.(Box<object>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 154: ERROR: cannot assign Box<object> to $h6 of type Box<B>
+155:		/*. Box<B> .*/ $h7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 155: ERROR: cannot assign Box<A> to $h7 of type Box<B>
+156:		/*. Box<B> .*/ $h8 = /*.(Box<B>).*/ NULL; // ok
+157:		/*. Box<B> .*/ $h9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 157: ERROR: cannot assign Box<C> to $h9 of type Box<B>
+158:		/*. Box<B> .*/ $h0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<B> .*/ $h0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 158: ERROR: cannot assign Box<Z> to $h0 of type Box<B>
+159:	
+160:		/*. Box<C> .*/ $i1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 160: ERROR: cannot assign Box<?> to $i1 of type Box<C>
+161:		/*. Box<C> .*/ $i2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 161: ERROR: cannot assign Box<?> to $i2 of type Box<C>
+162:		/*. Box<C> .*/ $i3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 162: ERROR: cannot assign Box<? extends B> to $i3 of type Box<C>
+163:		/*. Box<C> .*/ $i4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 163: ERROR: cannot assign Box<? parent object> to $i4 of type Box<C>
+164:		/*. Box<C> .*/ $i5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 164: ERROR: cannot assign Box<? parent B> to $i5 of type Box<C>
+165:		/*. Box<C> .*/ $i6 = /*.(Box<object>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i6 = /*.(Box<object>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 165: ERROR: cannot assign Box<object> to $i6 of type Box<C>
+166:		/*. Box<C> .*/ $i7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 166: ERROR: cannot assign Box<A> to $i7 of type Box<C>
+167:		/*. Box<C> .*/ $i8 = /*.(Box<B>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i8 = /*.(Box<B>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 167: ERROR: cannot assign Box<B> to $i8 of type Box<C>
+168:		/*. Box<C> .*/ $i9 = /*.(Box<C>).*/ NULL; // ok
+169:		/*. Box<C> .*/ $i0 = /*.(Box<Z>).*/ NULL; // ERR
+
+		/*. Box<C> .*/ $i0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 169: ERROR: cannot assign Box<Z> to $i0 of type Box<C>
+170:	
+171:		/*. Box<Z> .*/ $j1 = /*.(Box<?>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j1 = /*.(Box<?>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 171: ERROR: cannot assign Box<?> to $j1 of type Box<Z>
+172:		/*. Box<Z> .*/ $j2 = /*.(Box<? extends object>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                                                \_ HERE
+==== 172: ERROR: cannot assign Box<?> to $j2 of type Box<Z>
+173:		/*. Box<Z> .*/ $j3 = /*.(Box<? extends B>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                                           \_ HERE
+==== 173: ERROR: cannot assign Box<? extends B> to $j3 of type Box<Z>
+174:		/*. Box<Z> .*/ $j4 = /*.(Box<? parent object>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                                               \_ HERE
+==== 174: ERROR: cannot assign Box<? parent object> to $j4 of type Box<Z>
+175:		/*. Box<Z> .*/ $j5 = /*.(Box<? parent B>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                                          \_ HERE
+==== 175: ERROR: cannot assign Box<? parent B> to $j5 of type Box<Z>
+176:		/*. Box<Z> .*/ $j6 = /*.(Box<object>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j6 = /*.(Box<object>).*/ NULL; // ERR
+	                                                      \_ HERE
+==== 176: ERROR: cannot assign Box<object> to $j6 of type Box<Z>
+177:		/*. Box<Z> .*/ $j7 = /*.(Box<A>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j7 = /*.(Box<A>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 177: ERROR: cannot assign Box<A> to $j7 of type Box<Z>
+178:		/*. Box<Z> .*/ $j8 = /*.(Box<B>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j8 = /*.(Box<B>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 178: ERROR: cannot assign Box<B> to $j8 of type Box<Z>
+179:		/*. Box<Z> .*/ $j9 = /*.(Box<C>).*/ NULL; // ERR
+
+		/*. Box<Z> .*/ $j9 = /*.(Box<C>).*/ NULL; // ERR
+	                                                 \_ HERE
+==== 179: ERROR: cannot assign Box<C> to $j9 of type Box<Z>
+180:		/*. Box<Z> .*/ $j0 = /*.(Box<Z>).*/ NULL; // ok
+181:	
+182:	}
+
+		/*. Box<Z> .*/ $j0 = /*.(Box<Z>).*/ NULL; // ok
+	                          \_ HERE
+==== 180: notice: variable $j0 assigned but never used
+
+		/*. Box<Z> .*/ $j9 = /*.(Box<C>).*/ NULL; // ERR
+	                          \_ HERE
+==== 179: notice: variable $j9 assigned but never used
+
+		/*. Box<Z> .*/ $j8 = /*.(Box<B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 178: notice: variable $j8 assigned but never used
+
+		/*. Box<Z> .*/ $j7 = /*.(Box<A>).*/ NULL; // ERR
+	                          \_ HERE
+==== 177: notice: variable $j7 assigned but never used
+
+		/*. Box<Z> .*/ $j6 = /*.(Box<object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 176: notice: variable $j6 assigned but never used
+
+		/*. Box<Z> .*/ $j5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 175: notice: variable $j5 assigned but never used
+
+		/*. Box<Z> .*/ $j4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 174: notice: variable $j4 assigned but never used
+
+		/*. Box<Z> .*/ $j3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 173: notice: variable $j3 assigned but never used
+
+		/*. Box<Z> .*/ $j2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 172: notice: variable $j2 assigned but never used
+
+		/*. Box<Z> .*/ $j1 = /*.(Box<?>).*/ NULL; // ERR
+	                          \_ HERE
+==== 171: notice: variable $j1 assigned but never used
+
+		/*. Box<C> .*/ $i0 = /*.(Box<Z>).*/ NULL; // ERR
+	                          \_ HERE
+==== 169: notice: variable $i0 assigned but never used
+
+		/*. Box<C> .*/ $i9 = /*.(Box<C>).*/ NULL; // ok
+	                          \_ HERE
+==== 168: notice: variable $i9 assigned but never used
+
+		/*. Box<C> .*/ $i8 = /*.(Box<B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 167: notice: variable $i8 assigned but never used
+
+		/*. Box<C> .*/ $i7 = /*.(Box<A>).*/ NULL; // ERR
+	                          \_ HERE
+==== 166: notice: variable $i7 assigned but never used
+
+		/*. Box<C> .*/ $i6 = /*.(Box<object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 165: notice: variable $i6 assigned but never used
+
+		/*. Box<C> .*/ $i5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 164: notice: variable $i5 assigned but never used
+
+		/*. Box<C> .*/ $i4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 163: notice: variable $i4 assigned but never used
+
+		/*. Box<C> .*/ $i3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 162: notice: variable $i3 assigned but never used
+
+		/*. Box<C> .*/ $i2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 161: notice: variable $i2 assigned but never used
+
+		/*. Box<C> .*/ $i1 = /*.(Box<?>).*/ NULL; // ERR
+	                          \_ HERE
+==== 160: notice: variable $i1 assigned but never used
+
+		/*. Box<B> .*/ $h0 = /*.(Box<Z>).*/ NULL; // ERR
+	                          \_ HERE
+==== 158: notice: variable $h0 assigned but never used
+
+		/*. Box<B> .*/ $h9 = /*.(Box<C>).*/ NULL; // ERR
+	                          \_ HERE
+==== 157: notice: variable $h9 assigned but never used
+
+		/*. Box<B> .*/ $h8 = /*.(Box<B>).*/ NULL; // ok
+	                          \_ HERE
+==== 156: notice: variable $h8 assigned but never used
+
+		/*. Box<B> .*/ $h7 = /*.(Box<A>).*/ NULL; // ERR
+	                          \_ HERE
+==== 155: notice: variable $h7 assigned but never used
+
+		/*. Box<B> .*/ $h6 = /*.(Box<object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 154: notice: variable $h6 assigned but never used
+
+		/*. Box<B> .*/ $h5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 153: notice: variable $h5 assigned but never used
+
+		/*. Box<B> .*/ $h4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 152: notice: variable $h4 assigned but never used
+
+		/*. Box<B> .*/ $h3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 151: notice: variable $h3 assigned but never used
+
+		/*. Box<B> .*/ $h2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 150: notice: variable $h2 assigned but never used
+
+		/*. Box<B> .*/ $h1 = /*.(Box<?>).*/ NULL; // ERR
+	                          \_ HERE
+==== 149: notice: variable $h1 assigned but never used
+
+		/*. Box<A> .*/ $g0 = /*.(Box<Z>).*/ NULL; // ERR
+	                          \_ HERE
+==== 147: notice: variable $g0 assigned but never used
+
+		/*. Box<A> .*/ $g9 = /*.(Box<C>).*/ NULL; // ERR
+	                          \_ HERE
+==== 146: notice: variable $g9 assigned but never used
+
+		/*. Box<A> .*/ $g8 = /*.(Box<B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 145: notice: variable $g8 assigned but never used
+
+		/*. Box<A> .*/ $g7 = /*.(Box<A>).*/ NULL; // ok
+	                          \_ HERE
+==== 144: notice: variable $g7 assigned but never used
+
+		/*. Box<A> .*/ $g6 = /*.(Box<object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 143: notice: variable $g6 assigned but never used
+
+		/*. Box<A> .*/ $g5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 142: notice: variable $g5 assigned but never used
+
+		/*. Box<A> .*/ $g4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 141: notice: variable $g4 assigned but never used
+
+		/*. Box<A> .*/ $g3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                          \_ HERE
+==== 140: notice: variable $g3 assigned but never used
+
+		/*. Box<A> .*/ $g2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                          \_ HERE
+==== 139: notice: variable $g2 assigned but never used
+
+		/*. Box<A> .*/ $g1 = /*.(Box<?>).*/ NULL; // ERR
+	                          \_ HERE
+==== 138: notice: variable $g1 assigned but never used
+
+		/*. Box<object> .*/ $f0 = /*.(Box<Z>).*/ NULL; // ERR
+	                               \_ HERE
+==== 136: notice: variable $f0 assigned but never used
+
+		/*. Box<object> .*/ $f9 = /*.(Box<C>).*/ NULL; // ERR
+	                               \_ HERE
+==== 135: notice: variable $f9 assigned but never used
+
+		/*. Box<object> .*/ $f8 = /*.(Box<B>).*/ NULL; // ERR
+	                               \_ HERE
+==== 134: notice: variable $f8 assigned but never used
+
+		/*. Box<object> .*/ $f7 = /*.(Box<A>).*/ NULL; // ERR
+	                               \_ HERE
+==== 133: notice: variable $f7 assigned but never used
+
+		/*. Box<object> .*/ $f6 = /*.(Box<object>).*/ NULL; // ok
+	                               \_ HERE
+==== 132: notice: variable $f6 assigned but never used
+
+		/*. Box<object> .*/ $f5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                               \_ HERE
+==== 131: notice: variable $f5 assigned but never used
+
+		/*. Box<object> .*/ $f4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                               \_ HERE
+==== 130: notice: variable $f4 assigned but never used
+
+		/*. Box<object> .*/ $f3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                               \_ HERE
+==== 129: notice: variable $f3 assigned but never used
+
+		/*. Box<object> .*/ $f2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                               \_ HERE
+==== 128: notice: variable $f2 assigned but never used
+
+		/*. Box<object> .*/ $f1 = /*.(Box<?>).*/ NULL; // ERR
+	                               \_ HERE
+==== 127: notice: variable $f1 assigned but never used
+
+		/*. Box<? parent B> .*/ $e0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                   \_ HERE
+==== 125: notice: variable $e0 assigned but never used
+
+		/*. Box<? parent B> .*/ $e9 = /*.(Box<C>).*/ NULL; // ERR
+	                                   \_ HERE
+==== 124: notice: variable $e9 assigned but never used
+
+		/*. Box<? parent B> .*/ $e8 = /*.(Box<B>).*/ NULL; // ok
+	                                   \_ HERE
+==== 123: notice: variable $e8 assigned but never used
+
+		/*. Box<? parent B> .*/ $e7 = /*.(Box<A>).*/ NULL; // ok
+	                                   \_ HERE
+==== 122: notice: variable $e7 assigned but never used
+
+		/*. Box<? parent B> .*/ $e6 = /*.(Box<object>).*/ NULL; // ok
+	                                   \_ HERE
+==== 121: notice: variable $e6 assigned but never used
+
+		/*. Box<? parent B> .*/ $e5 = /*.(Box<? parent B>).*/ NULL; // ok
+	                                   \_ HERE
+==== 120: notice: variable $e5 assigned but never used
+
+		/*. Box<? parent B> .*/ $e4 = /*.(Box<? parent object>).*/ NULL; // ok
+	                                   \_ HERE
+==== 119: notice: variable $e4 assigned but never used
+
+		/*. Box<? parent B> .*/ $e3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                   \_ HERE
+==== 118: notice: variable $e3 assigned but never used
+
+		/*. Box<? parent B> .*/ $e2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                   \_ HERE
+==== 117: notice: variable $e2 assigned but never used
+
+		/*. Box<? parent B> .*/ $e1 = /*.(Box<?>).*/ NULL; // ERR
+	                                   \_ HERE
+==== 116: notice: variable $e1 assigned but never used
+
+		/*. Box<? parent object> .*/ $d0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 114: notice: variable $d0 assigned but never used
+
+		/*. Box<? parent object> .*/ $d9 = /*.(Box<C>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 113: notice: variable $d9 assigned but never used
+
+		/*. Box<? parent object> .*/ $d8 = /*.(Box<B>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 112: notice: variable $d8 assigned but never used
+
+		/*. Box<? parent object> .*/ $d7 = /*.(Box<A>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 111: notice: variable $d7 assigned but never used
+
+		/*. Box<? parent object> .*/ $d6 = /*.(Box<object>).*/ NULL; // ok
+	                                        \_ HERE
+==== 110: notice: variable $d6 assigned but never used
+
+		/*. Box<? parent object> .*/ $d5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 109: notice: variable $d5 assigned but never used
+
+		/*. Box<? parent object> .*/ $d4 = /*.(Box<? parent object>).*/ NULL; // ok
+	                                        \_ HERE
+==== 108: notice: variable $d4 assigned but never used
+
+		/*. Box<? parent object> .*/ $d3 = /*.(Box<? extends B>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 107: notice: variable $d3 assigned but never used
+
+		/*. Box<? parent object> .*/ $d2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 106: notice: variable $d2 assigned but never used
+
+		/*. Box<? parent object> .*/ $d1 = /*.(Box<?>).*/ NULL; // ERR
+	                                        \_ HERE
+==== 105: notice: variable $d1 assigned but never used
+
+		/*. Box<? extends B> .*/ $c0 = /*.(Box<Z>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 103: notice: variable $c0 assigned but never used
+
+		/*. Box<? extends B> .*/ $c9 = /*.(Box<C>).*/ NULL; // ok
+	                                    \_ HERE
+==== 102: notice: variable $c9 assigned but never used
+
+		/*. Box<? extends B> .*/ $c8 = /*.(Box<B>).*/ NULL; // ok
+	                                    \_ HERE
+==== 101: notice: variable $c8 assigned but never used
+
+		/*. Box<? extends B> .*/ $c7 = /*.(Box<A>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 100: notice: variable $c7 assigned but never used
+
+		/*. Box<? extends B> .*/ $c6 = /*.(Box<object>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 99: notice: variable $c6 assigned but never used
+
+		/*. Box<? extends B> .*/ $c5 = /*.(Box<? parent B>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 98: notice: variable $c5 assigned but never used
+
+		/*. Box<? extends B> .*/ $c4 = /*.(Box<? parent object>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 97: notice: variable $c4 assigned but never used
+
+		/*. Box<? extends B> .*/ $c3 = /*.(Box<? extends B>).*/ NULL; // ok
+	                                    \_ HERE
+==== 96: notice: variable $c3 assigned but never used
+
+		/*. Box<? extends B> .*/ $c2 = /*.(Box<? extends object>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 95: notice: variable $c2 assigned but never used
+
+		/*. Box<? extends B> .*/ $c1 = /*.(Box<?>).*/ NULL; // ERR
+	                                    \_ HERE
+==== 94: notice: variable $c1 assigned but never used
+
+		/*. Box<? extends object> .*/ $b0 = /*.(Box<Z>).*/ NULL; // ok
+	                                         \_ HERE
+==== 92: notice: variable $b0 assigned but never used
+
+		/*. Box<? extends object> .*/ $b9 = /*.(Box<C>).*/ NULL; // ok
+	                                         \_ HERE
+==== 91: notice: variable $b9 assigned but never used
+
+		/*. Box<? extends object> .*/ $b8 = /*.(Box<B>).*/ NULL; // ok
+	                                         \_ HERE
+==== 90: notice: variable $b8 assigned but never used
+
+		/*. Box<? extends object> .*/ $b7 = /*.(Box<A>).*/ NULL; // ok
+	                                         \_ HERE
+==== 89: notice: variable $b7 assigned but never used
+
+		/*. Box<? extends object> .*/ $b6 = /*.(Box<object>).*/ NULL; // ok
+	                                         \_ HERE
+==== 88: notice: variable $b6 assigned but never used
+
+		/*. Box<? extends object> .*/ $b5 = /*.(Box<? parent B>).*/ NULL; // ok
+	                                         \_ HERE
+==== 87: notice: variable $b5 assigned but never used
+
+		/*. Box<? extends object> .*/ $b4 = /*.(Box<? parent object>).*/ NULL; // ok
+	                                         \_ HERE
+==== 86: notice: variable $b4 assigned but never used
+
+		/*. Box<? extends object> .*/ $b3 = /*.(Box<? extends B>).*/ NULL; // ok
+	                                         \_ HERE
+==== 85: notice: variable $b3 assigned but never used
+
+		/*. Box<? extends object> .*/ $b2 = /*.(Box<? extends object>).*/ NULL; // ok
+	                                         \_ HERE
+==== 84: notice: variable $b2 assigned but never used
+
+		/*. Box<? extends object> .*/ $b1 = /*.(Box<?>).*/ NULL; // ok
+	                                         \_ HERE
+==== 83: notice: variable $b1 assigned but never used
+
+		/*. Box<?> .*/ $a0 = /*.(Box<Z>).*/ NULL; // ok
+	                          \_ HERE
+==== 81: notice: variable $a0 assigned but never used
+
+		/*. Box<?> .*/ $a9 = /*.(Box<C>).*/ NULL; // ok
+	                          \_ HERE
+==== 80: notice: variable $a9 assigned but never used
+
+		/*. Box<?> .*/ $a8 = /*.(Box<B>).*/ NULL; // ok
+	                          \_ HERE
+==== 79: notice: variable $a8 assigned but never used
+
+		/*. Box<?> .*/ $a7 = /*.(Box<A>).*/ NULL; // ok
+	                          \_ HERE
+==== 78: notice: variable $a7 assigned but never used
+
+		/*. Box<?> .*/ $a6 = /*.(Box<object>).*/ NULL; // ok
+	                          \_ HERE
+==== 77: notice: variable $a6 assigned but never used
+
+		/*. Box<?> .*/ $a5 = /*.(Box<? parent B>).*/ NULL; // ok
+	                          \_ HERE
+==== 76: notice: variable $a5 assigned but never used
+
+		/*. Box<?> .*/ $a4 = /*.(Box<? parent object>).*/ NULL; // ok
+	                          \_ HERE
+==== 75: notice: variable $a4 assigned but never used
+
+		/*. Box<?> .*/ $a3 = /*.(Box<? extends B>).*/ NULL; // ok
+	                          \_ HERE
+==== 74: notice: variable $a3 assigned but never used
+
+		/*. Box<?> .*/ $a2 = /*.(Box<? extends object>).*/ NULL; // ok
+	                          \_ HERE
+==== 73: notice: variable $a2 assigned but never used
+
+		/*. Box<?> .*/ $a1 = /*.(Box<?>).*/ NULL; // ok
+	                          \_ HERE
+==== 72: notice: variable $a1 assigned but never used
+END parsing of 5-generics-wildcard.php
+==== ?:?: notice: required module core.php
+==== ?:?: notice: required module file.php
+==== ?:?: notice: required module spl.php
+==== ?:?: notice: required package ../../../../../../stdlib/AutoloadException.php
+==== ?:?: notice: required package ../../../../../../stdlib/cast.php
+==== ?:?: notice: required package ../../../../../../stdlib/CastException.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/containers/Printable.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayBothType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayIntType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayStringType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/BooleanType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ClassType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/FloatType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/IntType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/MixedType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/NullType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ObjectType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ResourceType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/StringType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/TypeInterface.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/Types.php
+Overall test results: 91 errors, 0 warnings.

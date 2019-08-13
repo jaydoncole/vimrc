@@ -1,0 +1,759 @@
+<HTML>
+<HEAD>
+<TITLE>PHPLint Reference Manual</TITLE>
+<META name=description content="PHPLint Reference Manual">
+<META name=author      content="icosaedro.it di Umberto Salsi">
+<META name=owner       content="icosaedro.it di Umberto Salsi">
+<META HTTP-EQUIV="Content-Language"    content="en">
+<LINK rel=stylesheet type='text/css' href='../styles.css'>
+<script type="text/javascript" src="../utils.js"></script>
+</HEAD><BODY onload="buildTOC('toc');">
+
+
+<h2 id="toc">Class templates</h2>
+
+
+<p>
+Class templates, also known as generic classes, allow to define classes depending
+on some type parameters. Then, new specific types and new objects can be created based on
+this class template by providing actual values for the formal type parameters. PHPLint takes
+care to check that these new specific types and specific objects are used according
+to the specific parameters that where defined with, improving the documentation and avoiding
+the need to use the cast() magic function.
+</p>
+
+<p>
+	Class templates is a feature completely implemented inside PHPLint through special
+	meta-code specifications, and does not involves the PHP interpreter in any way;
+	PHP by itself is totally unaware of this feature and does not provide any
+	support at run time.
+</p>
+
+<p>
+	Type parameters can only be classes; the basic types like <tt>int</tt> and
+	<tt>string</tt> are not allowed. Handy container classes <tt>IntClass</tt>,
+	<tt>StringClass</tt> etc. are available under the <tt>it\icosaedro\containers</tt>
+	namespace that can be used to wraps simple values into an object.
+</p>
+
+
+<h3>Defining a class template</h3>
+
+<p>
+	As a first simple example of template class, we define a generic container
+	that stores some object, then a setter and getter methods provide access to
+	that value:
+</p>
+
+<blockquote>
+	<pre>
+/**
+ * An instance of this class stores an object of type T.
+ */
+class Box /*. &lt;T&gt; .*/ {
+
+	/**
+	 * Stored object.
+	 * @var T
+	 */
+	private $v;
+
+	/**
+	 * Stores the given object.
+	 * @param T $v Object to store.
+	 */
+	function __construct(/*. T .*/ $v){ $this-&gt;v = $v; }
+
+	/**
+	 * Replaces the currently stored object.
+	 * @param T $v Replacement object.
+	 */
+	function set($v){ $this-&gt;v = $v; }
+
+	/**
+	 * Returns the currently stored object.
+	 * @return T The stored object.
+	 */
+	function get(){ return $this-&gt;v; }
+}
+
+# Two classes to be used in our examples:
+class A { public $aNumber = 123; }
+class B { public $aString = "hello"; }
+
+# We create specific objects and arrays out of the generic Box class:
+$a = new Box/*. &lt;A&gt; .*/(new A());
+$b = new Box/*. &lt;B&gt; .*/(new B());
+$manyBoxedA = /*. (Box&lt;A&gt;[int]) .*/ array();
+
+# PHPLint is aware of the real nature of the these variables:
+echo "The number is ", $a-&gt;get()-&gt;aNumber;
+echo "The string is ", $b-&gt;get()-&gt;aString;
+$manyBoxedA[0] = new Box/*. &lt;A&gt; .*/(new A());
+	</pre>
+</blockquote>
+
+<p>
+	In the example above:
+</p>
+
+<ul>
+	<li>
+		A class template named <tt>Box&lt;T&gt;</tt> is defined, where <tt>T</tt>
+		is the formal type parameter that stands for "some class to be specified later".
+		The name of the formal type parameter can be any valid identifier, but a single
+		upper-case letter is commonly used. The name of a formal parameter is
+		case-sensitive and has no namespace. The scope of a formal parameter is
+		the template class itself; there is no way to reference a formal parameter
+		outside of its template.
+	</li>
+	<li>
+		The formal type parameter <tt>T</tt> can be used inside the code of the template
+		as any other type. Being <tt>T</tt> a virtual class, it can be used only inside
+		PHPLint meta-code and DocBlocks, and cannot be used in regular PHP code. Then,
+		<tt>T</tt> cannot be used to create new objects with the <tt>new</tt> operator,
+		nor it can be used as parameter's type-hint.
+	</li>
+	<li>
+		Once the template class has been defined, new objects can be created out of this template
+		using the <tt>new</tt> operator and specifying the actual value for
+		the type parameter. For example, the expression
+		<tt>new Box/*. &lt;A&gt; .*/(new A())</tt>
+		(virtually) creates a new class <tt>Box&lt;A&gt;</tt> and a new object.
+		In its memory PHPLint really creates a brand new class, first copying the
+		template and then replacing any occurrence of the formal type <tt>T</tt> with
+		the actual type <tt>A</tt>. From now on, PHPLint known for the existence of
+		this new type <tt>Box&lt;A&gt;</tt>, and that type can be used several times
+		in different contexts whenever a type is required.
+	</li>
+	<li>
+		Being the variable <tt>$a</tt> an instance of the specific class <tt>Box&lt;A&gt;</tt>,
+		PHPLint knows the exact type returned by the <tt>get()</tt> method applied to this
+		object: it is <tt>A</tt>.
+	</li>
+	<li>
+		The expression <tt>$a-&gt;get()-&gt;aNumber</tt> now has a very precise meaning,
+		both for the reader of the source and for PHPLint; no need to cast the value returned
+		by the getter method because the type returned is now well specified.
+	</li>
+</ul>
+
+
+<h3>Terminology</h3>
+
+<p>
+Classes can be concrete classes, abstract classes or interfaces. Classes can be
+real or generic:
+
+<p><b>Real class:</b> a class without type parameters. Real classes may still
+use generic classes in their body and in their definition, for example:
+<blockquote><tt>class BoxedA extends Box/*. &lt;A&gt; .*/ {}</tt></blockquote>
+</p>
+
+<p>
+<b>Generic class:</b> class with type parameters. The full name of
+a generic class has form <tt>FQN&lt;T1,T2,T3&gt;</tt> where FQN is the fully
+qualified name of the template class and T1, T2, T3, ... are the names of its
+parameters, which in turn can be real classes, generic classes or formal type
+parameters.
+A generic class can be a template or actualized:
+</p>
+
+<blockquote>
+<p>
+	<b>Template class:</b> the template for generic classes, with its own
+	formal type parameters as resulting from the parsing of its definition.
+	Templates are used to create new actualized classes by replacing their formal
+	parameters with some other type.
+</p>
+
+<p>
+	<b>Actualized class:</b> generic class generated replacing the formal
+	parameters of a template, possibly with other formal parameters or real classes or
+	actualized classes or class wildcard.
+	Actualized classes can be partially or fully actualized:
+</p>
+
+	<blockquote>
+	<p><b>Partially actualized class:</b> actualized class where some formal type
+		parameter or class wildcard still exists.</p>
+
+	<p><b>Fully actualized class:</b> actualized class with all the parameters
+		replaced by real classes or fully actualized classes.</p>
+	</blockquote>
+
+</blockquote>
+
+<p>
+	Then in the example above a template class named <tt>Box</tt> is defined with
+	formal type parameter <tt>T</tt>. The following <tt>Box&lt;A&gt;</tt> and
+	<tt>Box&lt;B&gt;</tt> are examples of fully actualizations of this template.
+</p>
+
+<p>
+	An example of partially actualized template might be <tt>Box&lt;T&gt;</tt> which
+	might be used inside the code of the template class itself.
+</p>
+
+
+<h3>Multiple type parameters</h3>
+
+<p>
+	A class template may have an arbitrary number of formal type parameters; this
+	time we will use PHPLint's meta-code rather than DocBlocks for brevity:
+</p>
+
+<blockquote>
+	<pre>
+class Pair /*. &lt;First,Second&gt; .*/ {
+
+	private /*. First .*/ $first;
+	private /*. Second .*/ $second;
+
+	/*. void .*/ function __construct(/*. First .*/ $first, /*. Second .*/ $second) {
+		$this-&gt;first = $first;
+		$this-&gt;second = $second;
+	}
+
+	/*. First  .*/ function getFirst()  { return $this-&gt;first; }
+	/*. Second .*/ function getSecond() { return $this-&gt;second; }
+}
+	
+$p = new Pair/*. &lt;A,B&gt; .*/(new A(), new B());
+echo "The number is ", $p-&gt;getFirst()-&gt;aNumber;
+echo "The string is ", $p-&gt;getSecond()-&gt;aString;
+	</pre>
+</blockquote>
+
+In this example, the <tt>Pair&lt;A,B&gt;</tt> template may contain a pair of objects,
+possibly of different classes. The <tt>new</tt> operator here creates an object
+of the brand new specific class <tt>Pair&lt;A,B&gt;</tt>, so PHPLint exactly knowns
+which are the types returned by the <tt>getFirst()</tt> and <tt>getSecond()</tt>
+methods applied to the <tt>$p</tt> variable (that is, <tt>A</tt> and <tt>B</tt>
+respectively).
+
+
+
+<h3>Formal type parameters with boundaries</h3>
+
+<p>
+	If the template class needs to know something about the nature of the formal types
+	it depends on, for example it needs to access some method or property, then
+	one or more boundaries may be specified. A boundary is any class or interface
+	the parameter must extend or implement in order to be allowed as actual type
+	parameter of our template. The formal type parameter can then be followed
+	by the <tt>extends</tt> keyword and then the boundary classes can be listed,
+	separated by a single ampersand character:
+</p>
+
+<blockquote>
+	<pre>class ClassName /*. &lt;T extends Boundary1 &amp; Boundary2&gt; .*/ { }</pre>
+</blockquote>
+
+<p>
+	Each boundary can be a class, an interface or a generic class.
+</p>
+
+<p>
+	Only the first boundary <tt>Boundary1</tt> of the formal type parameter
+	can be a concrete or abstract class or generic class,
+	the remaining boundaries must be all interfaces or generic interfaces.
+</p>
+
+<p>
+	The following example is a template class that implements an ordered list of
+	sortable objects:
+</p>
+
+<blockquote>
+	<pre>
+
+/*. require_module 'spl'; .*/
+use it\icosaedro\containers\Sortable;
+use it\icosaedro\containers\Printable;
+
+class SortedList /*. &lt;E extends Sortable&gt; .*/ implements Countable {
+
+	private /*. E[int] .*/ $elements = array();
+
+	public  /*. int .*/ function count(){ return count($this-&gt;elements); }
+
+	public  /*. void .*/ function put(/*. E .*/ $e){
+		// Bisection method.
+		$l = 0;
+		$r = count($this-&gt;elements);
+		do {
+			if( $l == $r ){
+				// Insert at offset $l:
+				array_splice($this-&gt;elements, $l, 0, array($e));
+				return;
+			}
+			$m = (int) (($l + $r)/2);
+			# Here is where we need to know that E implements Sortable:
+			$cmp = $e-&gt;compareTo($this-&gt;elements[$m]);
+			if( $cmp &lt; 0 )
+				$r = $m;
+			else if( $cmp &gt; 0 )
+				$l = $m+1;
+			else
+				$l = $r = $m;
+		} while(TRUE);
+	}
+
+	public /*. E .*/ function get(/*. int .*/ $i){ return $this-&gt;elements[$i]; }
+	
+	public /*. E[int] .*/ function getArray(){ return $this-&gt;elements; }
+}
+
+use it\icosaedro\containers\Arrays;
+use it\icosaedro\utils\Date;
+use it\icosaedro\utils\UString;
+
+# Ordered list of dates:
+$holidays = new SortedList/*. &lt;Date&gt; .*/();
+$holidays-&gt;put(new Date(2015, 12, 8) );
+$holidays-&gt;put(new Date(2016, 1, 1) );
+$holidays-&gt;put(new Date(2016, 1, 6) );
+echo "Holidays: ", Arrays::implode($holidays-&gt;getArray(), ", "), "\n";
+
+# Ordered list of Unicode strings:
+$countries = new SortedList/*. &lt;UString&gt; .*/();
+require_once __DIR__ . "/stdlib/utf8.php"; // handy u() function
+$countries-&gt;put(u("Ireland"));
+$countries-&gt;put(u("Denmark"));
+$countries-&gt;put(u("Poland"));
+$countries-&gt;put(u("Austria"));
+$countries-&gt;put(u("Italy"));
+$countries-&gt;put(u("France"));
+$countries-&gt;put(u("United Kingdom"));
+$countries-&gt;put(u("Germany"));
+$countries-&gt;put(u("Portugal"));
+$countries-&gt;put(u("Spain"));
+$countries-&gt;put(u("Greece"));
+$countries-&gt;put(u("Norway"));
+$countries-&gt;put(u("Sweden"));
+$countries-&gt;put(u("Finland"));
+echo "Countries:\n", Arrays::implode($countries-&gt;getArray(), "\n"), "\n";
+	</pre>
+</blockquote>
+
+<p>
+	Note that in this template the formal type parameter <tt>E</tt> has the <tt>Sortable</tt>
+	interface as a boundary, so that only objects of a specific class implementing
+	the <tt>Sortable::compareTo($other)</tt> method can be used to actualize this
+	template class. One example of such a class is the <tt>Date</tt> class used
+	in the example.
+</p>
+
+
+
+
+<h3>The class wildcard</h3>
+
+<p>
+	Rather than a specific class, the actual type parameter may restrict the range
+	of allowed actual types to some subtree of the classes' hierarchy using the
+	special class wildcard symbol <tt>?</tt>, which has 3 forms:
+</p>
+
+<ul>
+	<li>
+		<p>
+		<b>Unbounded class wildcard:</b> <tt>?</tt><br>
+		means "some specific class". Being an object of some specific
+		but unknown class, there is very little one can do with it. Example:
+		</p>
+		<blockquote>
+			<pre>function f(/*. <b>Box&lt;?&gt;</b> .*/ $box){
+	$o = $box-&gt;get(); // bare object
+	$box-&gt;set(new B()); // ERROR: nothing can be assigned to ?
+}</pre></blockquote>
+	</li>
+	<li>
+		<p>
+		<b>Class wildcard with subclass bound:</b> <tt>? extends B</tt><br>
+		means "B class or one of its derived classes".
+		</p>
+		<center>
+			<img src="templates-wildcard-subtype-bound.svg">
+		</center>
+		<p>
+		Since this object is B (or derivate from B) we can do with it anything we
+		can do with B objects. Obviously, assignment to a variable of this type is
+		impossible because we can't know to which specific class this variable
+		really will belong to at runtime. Example:
+		</p>
+		<blockquote>
+<pre>class A {}
+class B extends A {}
+class C extends B {}
+
+function g(/*. <b>Box&lt;? extends B&gt;</b> .*/ $box){
+	$b = $box-&gt;get(); // we get a B or derivate
+	$box-&gt;set(new B()); // ERROR: nothing can be assigned to ? extends B
+}</pre></blockquote>
+	</li>
+	<li>
+		<p>
+		<b>Class wildcard with parent class bound:</b> <tt>? parent B</tt><br>
+		means "B class or one of its parent classes".
+		</p>
+		<center>
+			<img src="templates-wildcard-parenttype-bound.svg">
+		</center>
+		<p>
+		Basically such a type is unreadable because <tt>object</tt> is the
+		sole interface it is guaranteed to be implemented. But it is writable: in
+		fact any object of type B or derivate from B can be assigned to it.
+		Example:
+		</p>
+		<blockquote>
+			<pre>function h(/*. <b>Box&lt;? parent B&gt;</b> .*/ $box){
+	$o = $box-&gt;get(); // bare object
+	$box-&gt;set(new A()); // ERROR: A is not assignable to ? parent B
+	$box-&gt;set(new B()); // ok
+	$box-&gt;set(new C()); // ok
+}</pre></blockquote>
+	</li>
+</ul>
+
+
+
+
+<h3>Default actualized class</h3>
+
+<p>
+	The raw name of a template class can be used by itself as a type; being the
+	type of its parameters unknown, these are replaced with the wildcard
+	parameter <tt>?</tt> creating the <b>default actualized class</b> out of its
+	raw template name. So for example, the raw actualized class of the <tt>Box</tt>
+	template is
+</p>
+<blockquote><tt>Box&lt;?&gt;</tt></blockquote>
+<p>
+	In this specific example, the resulting signature of the methods can be
+	informally written as:
+</p>
+<blockquote><pre>void __construct(? $v);
+void set($v);
+? get($v);</pre></blockquote>
+
+<p>
+	which implies the constructor and setter methods cannot be called because
+	no class can be subclass of an unknown class; the getter method can be called
+	retrieving a type which basically is <tt>object</tt>. The following concrete
+	example of code shows what can and what cannot be done with this raw actualized
+	class:
+</p>
+<blockquote><pre>$boxA = new Box/*.&lt;A&gt;.*/(new A());
+/*. Box .*/ $box = $boxA;
+$o = $box-&gt;get();   // $o is a bare object
+$box-&gt;set(new A()); // ERROR: nothing is subclass of ?
+$box1 = $box;       // ERROR: Box&lt;?&gt; is not subclass of Box&lt;A&gt;
+new Box(new A());   // ERROR: nothing is subclass of ?
+	
+function doSomethingOnBox(Box $box){
+	$o = $box-&gt;get();
+	$box->set(new A()); // ERROR: nothing is subclass of ?
+}
+
+doSomethingOnBox($boxA);
+doSomethingOnBox($box);
+doSomethingOnBox(new Box/*.&lt;object&gt;.*/(new Anything()));</pre></blockquote>
+
+<p>
+	Note that the constructor of the default actualization <tt>Box&lt;?&gt;</tt>
+	cannot be called because it pretends an object of an unknown class, then no
+	object can be created out of this specific raw class.
+</p>
+
+<p>
+	It worth to mention that <tt>Box&lt;object&gt;</tt> is only one of the possible
+	actualizations of the <tt>Box</tt> template, but it is not in any way related
+	to them apart from sharing the same template;
+	then, for example, a variable of type <tt>Box&lt;A&gt;</tt> cannot be assigned
+	to <tt>Box&lt;object&gt;</tt>.
+</p>
+
+<p>
+	Formal type parameters with bounds are replaced with the bounded wildcard
+	<tt>? extends B1</tt>, being <tt>B1</tt> the first boundary. Then then default
+	actualization of the <tt>SortedList</tt> template is
+</p>
+<blockquote><tt>SortedList&lt;? extends Sortable&gt;</tt></blockquote>
+<p>
+	In this specific example, the resulting signature of the methods can be
+	informally written as:
+</p>
+<blockquote><pre>int count();
+void put(? extends Sortable $e);
+? extends Sortable get(int $i);
+? extends Sortable[int] getArray();</pre></blockquote>
+<p>
+	which implies the <tt>put()</tt> method cannot be called because no class
+	can be subclass of an unknown class, while the <tt>get()</tt> and
+	<tt>getArray()</tt> basically returns objects of the <tt>Sortable</tt> class
+	and array of <tt>Sortable</tt> respectively.
+</p>
+
+<p>
+	Whenever the raw name of the template class appear in the source, PHPLint
+	assumes the default actualization of the template.
+</p>
+
+
+<h3>Inheritance with generic classes</h3>
+
+<p>
+	<b>Different actualizations of the same template class are never related,</b> even
+	if the actual classes set as parameter are one subclass of the other.
+	So in the following example:
+</p>
+
+<blockquote><pre>class A {}
+class B extends A {}
+class AnotherClass {}
+class MyTemplate/*.&lt;T&gt;.*/ extends AnotherClass {}
+class Concrete extends MyTemplate/*.&lt;A&gt;.*/ {}
+class AnotherTemplate/*.&lt;T&gt;.*/ extends MyTemplate/*.&lt;T&gt;.*/ {}
+
+$a = new MyTemplate/*.&lt;A&gt;.*/();
+$b = new MyTemplate/*.&lt;B&gt;.*/();
+$o = new MyTemplate/*.&lt;object&gt;.*/();
+$a = $b; // FORBIDDEN
+$o = $a; // FORBIDDEN
+$concrete = new Concrete();
+$a = $concrete;</pre></blockquote>
+
+<p>
+	objects $a, $b, $o only have <tt>AnotherClass</tt> as common ancestor, but
+	none of these variables can be assigned to another; in particular, $a and $b
+	cannot be assigned to $o, nor $b can be assigned to $a; all these objects
+	belongs to three distinct classes extended from <tt>AnotherClass</tt>;
+	only $concrete is subclass of $a and can be assigned to this latter.
+	The following inheritance tree shows the point of view of PHPLint about the
+	relations between these classes:
+</p>
+
+<blockquote><pre>
+object
+|
++---A
+|   |
+|   `---B
+|
+`---AnotherClass
+    |
+    +---MyTemplate&lt;A&gt;  ($a)
+    |   |
+    |   `---Concrete  ($concrete)
+    |
+    +---MyTemplate&lt;B&gt;  ($b)
+    |
+    `---MyTemplate&lt;object&gt;  ($o)</pre></blockquote>
+
+<p>
+	Note that <tt>MyTemplate&lt;object&gt;</tt> DOES NOT represent "any actualization
+	of <tt>MyTemplate</tt>", but it is only just one specific actualization of this
+	template.
+</p>
+<p>
+	The inheritance schema above is only in the mind of PHPLint; under
+	PHP the <tt>object</tt> class does not really exist, and the actualized classes
+	are just the same class; the resulting point of view of PHP is then as follows:
+</p>
+
+<blockquote><pre>
+A
+|
+`---B
+
+AnotherClass
+|
+`---MyTemplate  ($a, $b, $o)
+    |
+    `---Concrete ($concrete)</pre></blockquote>
+
+
+<h3>Assignment with generic classes</h3>
+
+<p>
+	While in general different actualizations of the same class are not
+	assignment-compatible, class wildcards are handled in a special way according
+	to the following rules:
+</p>
+<ul>
+	<li>
+		Any actualized type is assignment-compatible with itself and its parent
+		classes.
+	</li>
+	
+	<li>
+		<tt>?</tt> is assignment compatible with any class. Actually this is just
+		the same as <tt>? extends object</tt>.
+	</li>
+	
+	<li>
+		<tt>? extends B</tt> is assignment compatible with any subclass of <tt>B</tt>.
+	</li>
+	
+	<li>
+		<tt>? parent B</tt> is assignment compatible with any class X that can be
+		assigned to B.
+	</li>
+	
+	<li>
+		<tt>C&lt;?&gt</tt> is assignment compatible with any actualization
+		<tt>C&lt;X&gt</tt> of the same template.
+	</li>
+	
+	<li>
+		<tt>C&lt;? extends B&gt</tt> is assignment compatible with any actualization
+		<tt>C&lt;X&gt;</tt> of the same template provided that <tt>X</tt> be
+		subclass of the upper bound <tt>B</tt>.
+	</li>
+	
+	<li>
+		<tt>C&lt;? parent B&gt</tt> is assignment compatible with any actualization
+		<tt>C&lt;X&gt;</tt> of the same template provided that <tt>X</tt> be
+		assignable to the lower bound <tt>B</tt>.
+	</li>
+	
+	<li>
+		If the actualized type has 2 or more actual types, then the rules above
+		applies recursively to all these actual types, in the order.
+	</li>
+	
+</ul>
+
+
+
+
+
+<h3>Limitations</h3>
+
+<ul>
+	<li>
+		<p>
+		<b>Static properties cannot belong to a partially actualized class.</b>
+		Rationale:
+		there is only one instance of a static property and its type cannot change
+		at runtime by simply creating a new object out of its actualized class,
+		so a static property cannot depend on some formal parameter.
+		Note that fully actualized classed are allowed. Example:
+		</p>
+		<blockquote><pre>
+class MyClass/*. &lt;T&gt; .*/ {
+	static /*. List&lt;T&gt;         .*/ $p2; // ERROR: partially actualized class
+	static /*. List&lt;RealClass&gt; .*/ $p1; // fully actualized generic class is OK
+}
+		</pre></blockquote>
+		<p>
+			The type of a static property can be generic, but it must be fully
+			actualized with some specific class or fully actualized class.
+		</p>
+	</li>
+	<li>
+		<p>
+		<b>Static methods cannot return a partially actualized class nor their
+		parameters can be partially actualized classes.</b>
+		Rationale: static methods are shared among all the actualized classes, so
+		these methods cannot differentiate their behavior for any specific actualization
+		of the class they belong to. Example of invalid code to illustrate the point:
+		</p>
+		<blockquote><pre>
+class MyClass/*. &lt;T&gt; .*/ {
+	static /*. T .*/ function m(/*. T .*/ $x){ ... }
+}
+
+$x = C::m(new MyClass()); // cannot establish the actual type of $x
+		</pre></blockquote>
+		<p>
+			Here again, generic classes are allowed in static method's signature,
+			provided that these generic classes be fully actualized.
+		</p>
+	</li>
+	<li>
+		<p>
+		<b>Exceptions cannot be generic.</b> Rationale: the
+		<tt>catch()</tt> statement is executed at runtime when there is no way to
+		distinguish an actualized exception from another derived from the same
+		template. Note that type parameters can still be exceptions, although
+		these exceptions cannot be created inside the template class itself and
+		must be passed from outside in some way:
+		</p>
+		<blockquote>
+<pre>class C /*.&lt;Exc extends Exception&gt;.*/ {
+	function m(/*. Exc .*/ $e) /*. throws Exc .*/ {  ... throw $e; }
+}
+
+$o = new C/*.&lt;MyException&gt;.*/();
+try {
+	$o-&gt;m1(new MyException("something happened"));
+}
+catch(MyException $e){ ... }</pre>
+		</blockquote>
+		<p>
+			This object may implement some more specialized interface than the
+			bare Exception allowing to set some specific reason of the
+			failure from inside the template then returning a customized exception.
+		</p>
+	</li>
+	<li>
+		<b>Creating objects from partially actualized classes is forbidden.</b>
+		Then <tt>new C/*.&lt;A,B,C&gt;.*/()</tt> is allowed only if all the
+		types are real or fully actualized classes.
+		This implies, for example, that a template class cannot create instances
+		of itself or of its type parameters.
+		As a possible workaround, the template might be abstract with an abstract
+		creator method to be implemented in each specific actualization
+		of the class; only the specific implementation of that method knows how
+		to properly initialize the new object, whose nature is by definition unknown
+		to the template.
+	</li>
+	<li>
+		<b>The <tt>instanceof</tt> operator allows only the name of a real class
+		or template class; type parameters are not allowed.</b>
+		Rationale: this operator is evaluated at runtime, when the different
+		actualizations of the same template cannot be distinguished anymore.
+	</li>
+	<li>
+		<b>The type T of the cast(T,V) cannot contain generic classes.</b>
+		Or, in other words, actual parameters listed between angled brackets are
+		not allowed. Template classes are allowed, and in this case the default
+		actualization is assumed:
+		<blockquote><pre>$p1 = cast("Box", $m); // returns Box&lt;?&gt;
+$p2 = cast("Box&lt;A&gt;", $m); // ERROR: cannot check A on $m at runtime</pre></blockquote>
+		This also implies that objects belonging to generic classes can be serialized,
+		but once un-serialized they must be cast to the default actualization of
+		the class they belong to; the result is an object that can be "read" but
+		cannot be safely "written". As a possible workaround, you may define your
+		own non generic classes as extension of a template, for example:
+		<blockquote><pre>class IntStringPair extends Pair/*.&lt;IntClass,StringClass&gt;.*/{}</pre></blockquote>
+		This specialized class is not generic and can be used as usual.
+		<br>Rationale: at runtime, the actual types cannot be checked because objects
+		do not carry this information anymore.
+	</li>
+	<li>
+		<p>
+			<b>Implementing the same interface multiple times with different parameterization
+			is forbidden.</b> Although a template class may implement different parameterized
+			interfaces, and a template interface may extend several parameterized interfaces,
+			these implemented or extended interfaces must be distinct. The following code
+			is then not allowed:
+		</p>
+
+		<blockquote><pre>class MyTemplate/*.&lt;T&gt;.*/ implements MyInterface/*.&lt;T&gt;.*/, MyInterface/*.&lt;A&gt;.*/ {}</pre></blockquote>
+
+		<p>
+			The reason is twofold. First, PHP does not allow redundant interfaces and raises a
+			fatal error. Second, method overloading is not available, so there is no way to
+			implement the same method name with different signature. Our template may then
+			implement either <tt>MyInterface&lt;T&gt;</tt> or <tt>MyInterface&lt;A&gt;</tt>,
+			not both.
+		</p>
+	</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8">
+<TITLE>PHPLint Reference Manual</TITLE>
+<META name=description content="PHPLint Reference Manual">
+<META name=author      content="icosaedro.it di Umberto Salsi">
+<META name=owner       content="icosaedro.it di Umberto Salsi">
+<META HTTP-EQUIV="Content-Language"    content="en">
+<LINK rel=stylesheet type='text/css' href='../styles.css'>
+<script type="text/javascript" src="../utils.js"></script>
+</HEAD><BODY onload="buildTOC('toc');">
+
+<h2 id="toc">PHPLint's Standard Library</h2>
+
+<p>
+PHPLint comes with its own library of real PHP code named <i>PHPLint
+Standard Library</i>. These libraries provide features intended to be
+strictly tight to the PHPLint validator. These libraries are available
+under the <tt>stdlib/</tt> directory of the PHPLint package.
+</p>
+
+
+<h3>Handling errors -- errors.h</h3>
+
+<p>
+	By including this package, the behavior of both PHPLint and PHP radically
+	changes. Basically, this package turns all the errors triggered by the
+	PHP functions and user's functions into ErrorExceptions, here including
+	even the smallest notice which is commonly ignored by PHP programmers.
+	This exception is checked, which means your application may capture and
+	handle it with try/catch or declare it as thrown, but cannot ignore it.
+	Example of functions that may throw this exception are fopen(), unserialize(),
+	array_fill(), parse_url() and many others.
+</p>
+
+<p>
+	Moreover, errors raised by the core PHP engine are translated to the unchecked
+	exception InternalException. Being unchecked, its handling is not enforced
+	by PHPLint and normally applications should not even try to handle it
+	because there errors are bugs and the application should terminate immediately.
+	Example of these errors are: division by zero; accessing an array with a key
+	that does not exits; including a source file with include() or include_once(),
+	call_user_func(), and many others.
+</p>
+
+<p>
+	For more about the errors.php package, please read its documentation.
+</p>
+
+
+
+
+<h3>Autoloading classes -- autoload.php</h3>
+
+<p>
+This package enables class autoloading while PHP programs are running, and tells
+to PHPLint the source code it is currently parsing is using class autoloading.
+</p>
+
+
+
+<h3>The typecast magic function -- cast.php</h3>
+
+<p>
+The <tt>cast.php</tt> package provides the <tt>cast()</tt> magic function as
+described in the chapter <b>Typecasting</b>. It also defines the
+<tt>CastException</tt> unchecked exception derived from <tt>Exception</tt>.
+</p>
+
+
+
+
+<h3>Include all -- all.php</h3>
+
+<p>
+The <tt>all.php</tt> package simply loads all the packages above,
+so providing full support for class autoloading, safe error handling and
+safe typecasting in your programs.
+</p>
+
+
+<h3>Layout of the PHPLint Standard Library</h3>
+
+<p>
+	Brief description of the main components of the library:
+</p>
+
+<pre>
+├── AutoloadException.php
+├── CastException.php
+├── InternalException.php
+├── UnimplementedException.php
+├── all.php
+├── autoload.php
+├── bcmath-for-decimal-replacement.php
+├── bcmath-for-int-replacement.php
+├── cast.php
+├── dummy.php
+├── errors.php
+├── it
+│   └── icosaedro
+│       ├── bignumbers (integer and decimal numbers of arbitrary precision)
+│       ├── containers (common interfaces, collections and wrappers)
+│       ├── io (binary and text streams, compression, encoding)
+│       ├── lint (the PHPLint program)
+│       ├── phplint (runtime tools that implements the cast() function)
+│       ├── regex (binary and Unicode regular expressions)
+│       ├── sql (abstract SQL interface with implementations for MySQL and PostgreSQL)
+│       └── utils (date, statistics, large buffers, Unicode strings, ...)
+├── php.ini (sample PHP configuration file)
+└── utf8.php (the u() function that implements UString literal strings)
+</pre>
+
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+BEGIN parsing of 7-const-visibility.php
+1:	<?php
+2:	
+3:	// interface const can only be public:
+4:	interface IF0 {
+5:		private const A = 1;
+
+		private const A = 1;
+	               \_ HERE
+==== 5: ERROR: interface members can only be `public'
+6:		protected const B = 1;
+
+		protected const B = 1;
+	                 \_ HERE
+==== 6: ERROR: interface members can only be `public'
+7:		public const C = 1;
+8:	}
+9:	
+10:	interface IF1 {
+11:		public const C = 1;
+12:	}
+13:	
+14:	interface IF2 {
+15:		public const C = 2;
+16:	}
+17:	
+18:	abstract class ABS1 {
+19:		public const C = 2;
+20:	}
+21:	
+22:	// colliding inherited constants from IF or ABS class:
+23:	class C_IF1_IF2 extends ABS1 implements IF1, IF2 { }
+
+	class C_IF1_IF2 extends ABS1 implements IF1, IF2 { }
+	                \_ HERE
+==== 23: ERROR: colliding inherited constants:
+	IF2::C <---> IF1::C
+	IF2::C <---> ABS1::C
+	IF1::C <---> ABS1::C
+24:	
+25:	class A implements IF1 {
+26:		private const C = 9;
+
+		private const C = 9;
+	                        \_ HERE
+==== 26: ERROR: cannot re-define the constant IF1::C inherited from interface or abstract class
+27:		private const X = 1;
+28:		protected const Y = 2;
+29:		public const Z = 3;
+30:	
+31:		static function m(){
+32:			echo A::X, A::Y, A::Z;
+33:		}
+34:	}
+35:	
+36:	class B extends A {
+37:	
+38:		public const Z = 4;
+39:	
+40:		static function n(){
+41:			echo B::X, B::Y, B::Z;
+
+			echo B::X, B::Y, B::Z;
+	                          \_ HERE
+==== 41: ERROR: access forbidden to private class constant A::X
+42:		}
+43:	
+44:	}
+45:	
+46:	A::m();
+47:	B::m();
+48:	B::n();
+49:	echo A::X, A::Y, A::Z;
+
+	echo A::X, A::Y, A::Z;
+	          \_ HERE
+==== 49: ERROR: access forbidden to private class constant A::X
+
+	echo A::X, A::Y, A::Z;
+	                \_ HERE
+==== 49: ERROR: access forbidden to protected class constant A::Y
+50:	echo B::X, B::Y, B::Z;
+
+	echo B::X, B::Y, B::Z;
+	          \_ HERE
+==== 50: ERROR: access forbidden to private class constant A::X
+
+	echo B::X, B::Y, B::Z;
+	                \_ HERE
+==== 50: ERROR: access forbidden to protected class constant A::Y
+END parsing of 7-const-visibility.php
+
+		private const C = 9;
+	                        \_ HERE
+==== 26: notice: unused private constant A::C
+Overall test results: 9 errors, 0 warnings.

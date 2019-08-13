@@ -1,0 +1,40 @@
+# Fall-back, stripped-down mime types. The FileDownload::getTypeFromFilename()
+# looks at this file. A more complete version of this file is available on
+# any Apache web server installation with name "mime.types".
+
+application/javascript js
+application/msword doc docx
+application/pdf pdf
+application/postscript ps eps ai
+application/rtf rtf
+application/vnd.ms-cab-compressed cab
+application/vnd.ms-excel xls
+application/vnd.ms-powerpoint ppt
+application/vnd.oasis.opendocument.spreadsheet ods
+application/vnd.oasis.opendocument.text odt
+application/x-msdownload exe msi
+application/x-rar-compressed rar
+application/x-sql sql
+application/x-tar tar
+# xds missing in Apache file:
+application/xml xml xds
+application/zip zip
+audio/mpeg mp3
+image/bmp bmp
+image/gif gif
+image/jpeg jpe jpeg jpg
+image/png png
+image/svg+xml svg
+image/svg+xml svgz
+image/tiff
+image/tiff tiff tif
+image/vnd.adobe.photoshop psd
+image/vnd.microsoft.icon ico
+message/rfc822 eml
+text/css css
+text/html htm html
+text/plain txt text
+# php missing in Apache file:
+text/x-php php
+video/quicktime mov
+video/quicktime qt

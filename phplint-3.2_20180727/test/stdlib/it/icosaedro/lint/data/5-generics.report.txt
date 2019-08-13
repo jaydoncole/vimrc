@@ -1,0 +1,309 @@
+BEGIN parsing of 5-generics.php
+1:	<?php /*. require_module 'core'; require_module 'spl'; .*/
+2:	
+3:	class C1 {
+4:		/*. int .*/ function m1(/*. string .*/ $s){ return 123; }
+5:	}
+
+		/*. int .*/ function m1(/*. string .*/ $s){ return 123; }
+	                                                 \_ HERE
+==== 4: notice: variable $s assigned but never used
+6:	
+7:	interface IF1 {
+8:		/*. string .*/ function m2(/*. int .*/ $i);
+9:	}
+10:	
+11:	class X /*. <A extends C1, B extends C1 & IF1, C> .*/
+12:	{
+13:		/*. int .*/ function m3(){ return 456; }
+14:	}
+15:	
+16:	//if(new X()); // FIXME: fatal because X's parameters have boundaries
+17:	
+18:	class C2 extends C1 {}
+19:	class C3 extends C1 implements IF1 {
+20:		/*. string .*/ function m2(/*. int .*/ $i){ return "$i"; }
+21:	}
+22:	class C4 {
+23:		/*. int .*/ function m4(){ return 789; }
+24:	}
+25:	
+26:	$o = new X/*.<C2,C3,C4>.*/();
+27:	if($o);
+
+	if($o);
+	      \_ HERE
+==== 27: ERROR: found expression of type X<C2,C3,C4>, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+28:	
+29:	if(new X/*.<object,object,object>.*/);
+
+	if(new X/*.<object,object,object>.*/);
+	                   \_ HERE
+==== 29: ERROR: object is not C1
+
+	if(new X/*.<object,object,object>.*/);
+	                          \_ HERE
+==== 29: ERROR: object is not C1
+
+	if(new X/*.<object,object,object>.*/);
+	                          \_ HERE
+==== 29: ERROR: object is not IF1
+30:	
+31:	
+32:	class Pair/*.<T>.*/
+33:	{
+34:		/**
+35:		 * @var T
+36:		 */
+37:		private $first, $second;
+38:	
+39:		public function __construct(/*. T .*/ $first, /*. T .*/ $second) {
+40:			$this->first = $first;
+41:			$this->second = $second;
+42:		}
+43:	
+44:		public /*. T .*/ function getFirst() { return $this->first; }
+45:	
+46:		/**
+47:		 * @return T
+48:		 */
+49:		public function getSecond() { return $this->second; }
+50:	
+51:		public function setFirst(/*. T .*/ $newValue) { $this->first = $newValue; }
+52:	
+53:		/**
+54:		 * @param T $newValue
+55:		 */
+56:		public function setSecond($newValue) { $this->second = $newValue; }
+57:	}
+58:	
+59:	$p = new Pair/*.<C1>.*/(new C1(), new C2);
+60:	if($p);
+
+	if($p);
+	      \_ HERE
+==== 60: ERROR: found expression of type Pair<C1>, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+61:	
+62:	$q = new Pair/*.<C1>.*/(new C1(), new C1);
+63:	if($q);
+
+	if($q);
+	      \_ HERE
+==== 63: ERROR: found expression of type Pair<C1>, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+64:	$p = $q;
+65:	$q = $p;
+66:	
+67:	if($q->first);
+
+	if($q->first);
+	             \_ HERE
+==== 67: ERROR: access forbidden to private property Pair<C1>::$first
+
+	if($q->first);
+	             \_ HERE
+==== 67: ERROR: found expression of type C1, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+68:	
+69:	if($q->getFirst());
+
+	if($q->getFirst());
+	                  \_ HERE
+==== 69: ERROR: found expression of type C1, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+70:	
+71:	// Primitive types not allowed as actual type param:
+72:	new Pair/*.<int>.*/();
+
+	new Pair/*.<int>.*/();
+	                \_ HERE
+==== 72: ERROR: not a class: int
+73:	/** @return Pair<float> */ function f(/*. Pair<string> .*/ $p1){}
+
+	@return Pair<float>
+	                  \_ HERE
+==== 72: ERROR: not a class: float
+
+	/** @return Pair<float> */ function f(/*. Pair<string> .*/ $p1){}
+	                                                      \_ HERE
+==== 73: ERROR: not a class: string
+74:	
+75:	//----------------------------------------------------------------------------
+76:	
+77:	/** Exception as boundary: */
+
+	/** @return Pair<float> */ function f(/*. Pair<string> .*/ $p1){}
+	                                     \_ HERE
+==== 73: ERROR: missing `return' in at least one execution path in non-void function f
+
+	/** @return Pair<float> */ function f(/*. Pair<string> .*/ $p1){}
+	                                                              \_ HERE
+==== 73: notice: variable $p1 assigned but never used
+78:	class MyException extends Exception {
+79:		public $realCause = "";
+80:		function setRealCause(/*. string .*/ $realCause){
+81:			$this->realCause = $realCause;
+82:		}
+83:		function getRealCause() {
+84:			return $this->realCause;
+85:		}
+86:	}
+87:	
+88:	class C5/*.<T extends MyException>.*/ {
+89:	
+90:		function m1(/*. T .*/ $e) /*. throws T .*/ {
+91:			$e->setRealCause("cannot do m1");
+92:			throw $e;
+
+			throw $e;
+	                         \_ HERE
+==== 92: notice: throwing C5#T
+93:		}
+94:	
+95:		/**
+96:		 * @param T $e
+97:		 * @throws T
+98:		 */
+99:		function m2($e) {
+100:			$e->setRealCause("cannot do m2");
+101:			throw $e;
+
+			throw $e;
+	                         \_ HERE
+==== 101: notice: throwing C5#T
+102:		}
+103:	
+104:	}
+105:	
+106:	$o5 = new C5 /*.<MyException>.*/();
+107:	try {
+108:		$o5->m1(new MyException("failed doing m1"));
+
+		$o5->m1(new MyException("failed doing m1"));
+	                                                    \_ HERE
+==== 108: notice: throwing MyException
+109:	}
+110:	catch(MyException $e){
+111:		echo $e->realCause;
+112:	}
+113:	
+114:	//---------------------------------------------------------------------------
+115:	// Template generating instances of type param (POC).
+116:	
+117:	abstract class SelfCreator/*.<T>.*/ {
+118:		function __construct(){} // just to check parent ctor call in extended class
+119:		public abstract /*. T .*/ function create();
+120:		public /*. T[int] .*/ function create10(){
+121:			/*. T[int] .*/ $a = array();
+122:			for($i = 0; $i < 10; $i++)
+123:				$a[] = $this->create();
+124:			return $a;
+125:		}
+126:	}
+127:	
+128:	class C6 { public $p6 = 0; }
+129:	class C7 { public $p7 = 0; }
+130:	
+131:	class SelfCreator6 extends SelfCreator/*.<C6>.*/ {
+132:		function __construct(){} // missing call to parent ctor
+133:		public /*. C6 .*/ function create()
+
+		function __construct(){} // missing call to parent ctor
+	                            \_ HERE
+==== 132: ERROR: missing call to the parent constructor
+134:			{ $o = new C6(); $o->p6 = 666; return $o; }
+135:	}
+136:	
+137:	class SelfCreator7 extends SelfCreator/*.<C7>.*/ {
+138:		function __construct(){ parent::__construct(); }
+139:		public /*. C7 .*/ function create()
+140:			{ $o = new C7(); $o->p7 = 666; return $o; }
+141:	}
+142:	
+143:	$o6 = new SelfCreator6(); // --> C6[int]
+144:	if($o6->create10());
+
+	if($o6->create10());
+	                   \_ HERE
+==== 144: ERROR: found expression of type C6[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+145:	
+146:	$o7 = new SelfCreator7(); // --> C7[int]
+147:	if($o7->create10());
+
+	if($o7->create10());
+	                   \_ HERE
+==== 147: ERROR: found expression of type C7[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+148:	
+149:	//---------------------------------------------------------------------------
+150:	// Inheritance rules.
+151:	
+152:	class C8/*.<T>.*/ {}
+153:	
+154:	class C9/*.<T>.*/ extends C8/*.<T>.*/ {}
+155:	
+156:	class C10 {}
+157:	class C11 {}
+158:	
+159:	/*. C8<C10> .*/ $o8 = new C9/*.<C10>.*/(); // ok
+160:	$o8 = new C9/*.<C11>.*/(); // not subclass
+
+	$o8 = new C9/*.<C11>.*/(); // not subclass
+	                          \_ HERE
+==== 160: ERROR: (C8<C10>) = (C9<C11>): incompatible types
+161:	
+162:	class C12 extends C9/*.<C10>.*/ {}
+163:	class C13 extends C9/*.<C11>.*/ {}
+164:	$o8 = new C12(); // ok
+165:	$o8 = new C13(); // not subclass
+
+	$o8 = new C13(); // not subclass
+	                \_ HERE
+==== 165: ERROR: (C8<C10>) = (C13): incompatible types
+166:	
+167:	//---------------------------------------------------------------------------
+168:	// Dependency from different actualizations of the same interface.
+169:	// Not detected, but there is no way to implements both without error.
+170:	
+171:	class C14 {}
+172:	class C15 {}
+173:	interface IF16/*.<T>.*/ { /*. T .*/ function m(/*. T .*/ $t); }
+174:	class C16 implements IF16/*.<C14>.*/, IF16/*.<C15>.*/ {
+175:		/*. C14 .*/ function m(/*. C14 .*/ $t){ return NULL; } // not compatible with IF16<C15>::m
+176:	//	/*. C15 .*/ function m(/*. C15 .*/ $t){ return NULL; } // not compatible with IF16<C14>::m
+177:	}
+
+		/*. C14 .*/ function m(/*. C14 .*/ $t){ return NULL; } // not compatible with IF16<C15>::m
+	                                             \_ HERE
+==== 175: notice: variable $t assigned but never used
+
+		/*. C14 .*/ function m(/*. C14 .*/ $t){ return NULL; } // not compatible with IF16<C15>::m
+	                              \_ HERE
+==== 175: ERROR: method C16::m with prototype
+	public C14(C14)
+	is not call-compatible with IF16<C15>::m with prototype
+	public C15(C15)
+	(return type C14 cannot be assigned to C15)
+178:	
+179:	//---------------------------------------------------------------------------
+180:	// Template accounting.
+181:	/** @access private */
+182:	class C17 {} // used
+183:	/** @access private */
+184:	class C18/*.<T>.*/ {} // unused
+185:	/** @access private */
+186:	class C19/*.<T>.*/ {}  // used
+187:	new C19/*.<C17>.*/();
+188:	
+189:	//---------------------------------------------------------------------------
+190:	// Instanceof: type params not allowed:
+191:	class C20/*.<T>.*/{}
+192:	if( $p instanceof C20/*.<xxx>.*/); // FATAL
+
+	if( $p instanceof C20/*.<xxx>.*/); // FATAL
+	                         \_ HERE
+==== 192: ERROR: (FATAL) type parameters not allowed in `instanceof'
+
+	class C18/*.<T>.*/ {} // unused
+	         \_ HERE
+==== 184: notice: unused class C18
+==== ?:?: notice: unused module spl.php
+==== ?:?: notice: required module core.php
+==== ?:?: notice: required module file.php
+Overall test results: 20 errors, 0 warnings.

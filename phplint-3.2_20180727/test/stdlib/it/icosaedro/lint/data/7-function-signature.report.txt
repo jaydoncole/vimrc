@@ -1,0 +1,43 @@
+BEGIN parsing of 7-function-signature.php
+1:	<?php
+2:	// PHP 7 functions and method signature.
+3:	
+4:	class MyClass {
+5:		function m(): self { return $this; }
+6:	}
+7:	
+8:	function f0(): void { return; }
+9:	function f1(): bool { return FALSE; }
+10:	// "boolean" not allowed by PHP.
+11:	//function f2(): boolean { return FALSE; }
+12:	function f3(): int { return 123; }
+13:	// "integer" not allowed by PHP.
+14:	//function f4(): integer { return 123; }
+15:	function f5(): float { return 0.0; }
+16:	// "double" not allowed by PHP.
+17:	//function f6(): double { return 0.0; }
+18:	// "real" not allowed by PHP.
+19:	//function f7(): real { return 0.0; }
+20:	function f8(): string { return ""; }
+21:	function f9(): array { return []; }
+22:	// "object" not allowed by PHP.
+23:	//function f10(): object { return new MyClass(); }
+24:	function f11(): MyClass { return new MyClass(); }
+25:	
+26:	// PHP only checks returned type at runtime, so lets invoke all functions:
+27:	f0();
+28:	f1();
+29:	//f2();
+30:	f3();
+31:	//f4();
+32:	f5();
+33:	//f6();
+34:	//f7();
+35:	f8();
+36:	f9();
+37:	//f10();
+38:	f11();
+39:	
+40:	(new MyClass())->m();
+END parsing of 7-function-signature.php
+Overall test results: 0 errors, 0 warnings.

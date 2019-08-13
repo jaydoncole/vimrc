@@ -1,0 +1,493 @@
+BEGIN parsing of 5-variadic-parameters.php
+1:	<?php
+2:	
+3:	require_once __DIR__ . "/../../../../../../stdlib/errors.php";
+4:	
+5:	function f(/*. int .*/ ...$a)
+6:	{
+7:		if( isset($a[0]) && $a[0] );
+
+		if( isset($a[0]) && $a[0] );
+	                              \_ HERE
+==== 7: ERROR: invalid right-hand type for the `&&' operator: int
+8:	}
+9:	
+10:	f();
+11:	f(1, 2, 3);
+12:	f('a');
+
+	f('a');
+	      \_ HERE
+==== 12: ERROR: calling f declared in line 5, argument no. 1: found type string is not assignment compatible with $a of type int
+13:	
+14:	class MyClass{}
+15:	
+16:	function g(MyClass ... $a){}
+17:	
+18:	g();
+
+	function g(MyClass ... $a){}
+	                         \_ HERE
+==== 16: notice: variable $a assigned but never used
+19:	g(new MyClass);
+20:	//g(new MyClass, NULL);
+21:	
+22:	function f1(/*. mixed .*/ ... $a){ if($a); }
+
+	function f1(/*. mixed .*/ ... $a){ if($a); }
+	                                         \_ HERE
+==== 22: ERROR: found expression of type mixed[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+23:	
+24:	class A{}
+25:	
+26:	function f5(/*. int .*/ $dummy, A ... $a){ if($a); }
+
+	function f5(/*. int .*/ $dummy, A ... $a){ if($a); }
+	                                                 \_ HERE
+==== 26: ERROR: found expression of type A[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+27:	
+28:	f5(0);
+
+	function f5(/*. int .*/ $dummy, A ... $a){ if($a); }
+	                              \_ HERE
+==== 26: notice: variable $dummy assigned but never used
+29:	f5(0, new A());
+30:	f5(0, new A(), new A());
+31:	
+32:	/**
+33:	 * @param int $dummy
+34:	 * @param A ... $a
+35:	 */
+36:	function f6($dummy, $a){ if($a); }
+
+	function f6($dummy, $a){ if($a); }
+	                      \_ HERE
+==== 36: ERROR: conflicting variadic passing mode `...' between DocBlock and actual code for parameter $a
+
+	function f6($dummy, $a){ if($a); }
+	                               \_ HERE
+==== 36: ERROR: found expression of type A, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+37:	
+38:	/**
+39:	 * @param int $dummy
+40:	 * @param A ... $a
+41:	 */
+
+	function f6($dummy, $a){ if($a); }
+	                  \_ HERE
+==== 36: notice: variable $dummy assigned but never used
+42:	function f7($dummy, ...$a){ if($a); }
+
+	function f7($dummy, ...$a){ if($a); }
+	                                  \_ HERE
+==== 42: ERROR: found expression of type A[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+43:	
+44:	/**
+45:	 * @param int $dummy
+46:	 * @param A $a
+47:	 */
+
+	function f7($dummy, ...$a){ if($a); }
+	                  \_ HERE
+==== 42: notice: variable $dummy assigned but never used
+48:	function f8($dummy, ...$a){ if($a); }
+
+	function f8($dummy, ...$a){ if($a); }
+	                         \_ HERE
+==== 48: ERROR: conflicting variadic passing mode `...' between DocBlock and actual code for parameter $a
+
+	function f8($dummy, ...$a){ if($a); }
+	                                  \_ HERE
+==== 48: ERROR: found expression of type A[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+49:	
+50:	/*. forward void function f9(int ...$a); .*/
+
+	function f8($dummy, ...$a){ if($a); }
+	                  \_ HERE
+==== 48: notice: variable $dummy assigned but never used
+51:	function f9(/*. int .*/ ...$a){}
+52:	
+53:	/*. forward void function f10(int ...$a); .*/
+
+	function f9(/*. int .*/ ...$a){}
+	                             \_ HERE
+==== 51: notice: variable $a assigned but never used
+54:	function f10(/*. int .*/ $a){}
+
+	function f10(/*. int .*/ $a){}
+	            \_ HERE
+==== 54: ERROR: function f10 with prototype
+	void function f10(int)
+	does not match the forward declaration in line 53 with prototype
+	void function f10(int ...)
+55:	
+56:	
+57:	/*. forward void function f11(int $a); .*/
+
+	function f10(/*. int .*/ $a){}
+	                           \_ HERE
+==== 54: notice: variable $a assigned but never used
+58:	function f11(/*. int .*/ ...$a){}
+
+	function f11(/*. int .*/ ...$a){}
+	            \_ HERE
+==== 58: ERROR: function f11 with prototype
+	void function f11(int ...)
+	does not match the forward declaration in line 57 with prototype
+	void function f11(int)
+59:	
+60:	class B {
+
+	function f11(/*. int .*/ ...$a){}
+	                              \_ HERE
+==== 58: notice: variable $a assigned but never used
+61:		/*. forward public void function m1(int ...$a); .*/
+62:		public function m1(/*. int .*/ ...$a){}
+63:	
+64:		/*. forward public void function m2(int ...$a); .*/
+
+		public function m1(/*. int .*/ ...$a){}
+	                                            \_ HERE
+==== 62: notice: variable $a assigned but never used
+65:		public function m2(/*. int .*/ $a){}
+
+		public function m2(/*. int .*/ $a){}
+	                          \_ HERE
+==== 65: ERROR: method B::m2 with prototype
+	public void(int)
+	does not match the forward declaration in line 64 with prototype
+	public void(int ...)
+66:	
+67:		/*. forward public void function m3(int $a); .*/
+
+		public function m2(/*. int .*/ $a){}
+	                                         \_ HERE
+==== 65: notice: variable $a assigned but never used
+68:		public function m3(/*. int .*/ ...$a){}
+
+		public function m3(/*. int .*/ ...$a){}
+	                          \_ HERE
+==== 68: ERROR: method B::m3 with prototype
+	public void(int ...)
+	does not match the forward declaration in line 67 with prototype
+	public void(int)
+69:	}
+
+		public function m3(/*. int .*/ ...$a){}
+	                                            \_ HERE
+==== 68: notice: variable $a assigned but never used
+70:	
+71:	interface IF1 {
+72:		function m1(/*. string .*/ ... $a);
+73:		function m2(/*. int .*/ $a, /*. string .*/ ... $b);
+74:		function m3(/*. int .*/ $a = 0, /*. string .*/ ... $b);
+75:		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ ... $c);
+76:	}
+77:	
+78:	// ok
+79:	class C1 implements IF1 {
+80:		function m1(/*. string .*/ ... $a){}
+81:		function m2(/*. int .*/ $a, /*. string .*/ ... $b){}
+
+		function m1(/*. string .*/ ... $a){}
+	                                         \_ HERE
+==== 80: notice: variable $a assigned but never used
+82:		function m3(/*. int .*/ $a = 0, /*. string .*/ ... $b){}
+
+		function m2(/*. int .*/ $a, /*. string .*/ ... $b){}
+	                                                         \_ HERE
+==== 81: notice: variable $b assigned but never used
+
+		function m2(/*. int .*/ $a, /*. string .*/ ... $b){}
+	                                  \_ HERE
+==== 81: notice: variable $a assigned but never used
+83:		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ ... $c){}
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ ... $b){}
+	                                                             \_ HERE
+==== 82: notice: variable $b assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ ... $b){}
+	                                  \_ HERE
+==== 82: notice: variable $a assigned but never used
+84:	}
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ ... $c){}
+	                                                                 \_ HERE
+==== 83: notice: variable $c assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ ... $c){}
+	                                      \_ HERE
+==== 83: notice: variable $b assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ ... $c){}
+	                                  \_ HERE
+==== 83: notice: variable $a assigned but never used
+85:	
+86:	// missing ... in variadic arg
+87:	class C2 implements IF1 {
+88:		function m1(/*. string .*/ $a){}
+89:		function m2(/*. int .*/ $a, /*. string .*/ $b){}
+
+		function m1(/*. string .*/ $a){}
+	                                     \_ HERE
+==== 88: notice: variable $a assigned but never used
+
+		function m1(/*. string .*/ $a){}
+	                   \_ HERE
+==== 88: ERROR: method C2::m1 with prototype
+	public void(string)
+	is not call-compatible with IF1::m1 with prototype
+	public void(string ...)
+	(too many mandatory arguments)
+90:		function m3(/*. int .*/ $a = 0, /*. string .*/ $b){}
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b){}
+	                                                     \_ HERE
+==== 89: notice: variable $b assigned but never used
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b){}
+	                                  \_ HERE
+==== 89: notice: variable $a assigned but never used
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b){}
+	                   \_ HERE
+==== 89: ERROR: method C2::m2 with prototype
+	public void(int, string)
+	is not call-compatible with IF1::m2 with prototype
+	public void(int, string ...)
+	(too many mandatory arguments)
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b){}
+	                                                          \_ HERE
+==== 90: ERROR: missing default value for argument $b. Hint: mandatory arguments can't follow the default ones.
+91:		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b){}
+	                                                         \_ HERE
+==== 90: notice: variable $b assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b){}
+	                                  \_ HERE
+==== 90: notice: variable $a assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b){}
+	                   \_ HERE
+==== 90: ERROR: method C2::m3 with prototype
+	public void(int =, string)
+	is not call-compatible with IF1::m3 with prototype
+	public void(int =, string ...)
+	(too many mandatory arguments)
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+	                                                              \_ HERE
+==== 91: ERROR: missing default value for argument $c. Hint: mandatory arguments can't follow the default ones.
+92:	}
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+	                                                             \_ HERE
+==== 91: notice: variable $c assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+	                                      \_ HERE
+==== 91: notice: variable $b assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+	                                  \_ HERE
+==== 91: notice: variable $a assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c){}
+	                   \_ HERE
+==== 91: ERROR: method C2::m4 with prototype
+	public void(int, int =, string)
+	is not call-compatible with IF1::m4 with prototype
+	public void(int, int =, string ...)
+	(too many mandatory arguments)
+93:	
+94:	// wrong type of the variadic arg
+95:	class C3 implements IF1 {
+96:		function m1(/*. resource .*/ ... $a){}
+97:		function m2(/*. int .*/ $a, /*. resource .*/ ... $b){}
+
+		function m1(/*. resource .*/ ... $a){}
+	                                           \_ HERE
+==== 96: notice: variable $a assigned but never used
+
+		function m1(/*. resource .*/ ... $a){}
+	                   \_ HERE
+==== 96: ERROR: method C3::m1 with prototype
+	public void(resource ...)
+	is not call-compatible with IF1::m1 with prototype
+	public void(string ...)
+	(the type of the variadic parameter is not call-compatible)
+98:		function m3(/*. int .*/ $a = 0, /*. resource .*/ ... $b){}
+
+		function m2(/*. int .*/ $a, /*. resource .*/ ... $b){}
+	                                                           \_ HERE
+==== 97: notice: variable $b assigned but never used
+
+		function m2(/*. int .*/ $a, /*. resource .*/ ... $b){}
+	                                  \_ HERE
+==== 97: notice: variable $a assigned but never used
+
+		function m2(/*. int .*/ $a, /*. resource .*/ ... $b){}
+	                   \_ HERE
+==== 97: ERROR: method C3::m2 with prototype
+	public void(int, resource ...)
+	is not call-compatible with IF1::m2 with prototype
+	public void(int, string ...)
+	(the type of the variadic parameter is not call-compatible)
+99:		function m4(/*. int .*/ $a, $b = 0, /*. resource .*/ ... $c){}
+
+		function m3(/*. int .*/ $a = 0, /*. resource .*/ ... $b){}
+	                                                               \_ HERE
+==== 98: notice: variable $b assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. resource .*/ ... $b){}
+	                                  \_ HERE
+==== 98: notice: variable $a assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. resource .*/ ... $b){}
+	                   \_ HERE
+==== 98: ERROR: method C3::m3 with prototype
+	public void(int =, resource ...)
+	is not call-compatible with IF1::m3 with prototype
+	public void(int =, string ...)
+	(the type of the variadic parameter is not call-compatible)
+100:	}
+
+		function m4(/*. int .*/ $a, $b = 0, /*. resource .*/ ... $c){}
+	                                                                   \_ HERE
+==== 99: notice: variable $c assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. resource .*/ ... $c){}
+	                                      \_ HERE
+==== 99: notice: variable $b assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. resource .*/ ... $c){}
+	                                  \_ HERE
+==== 99: notice: variable $a assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. resource .*/ ... $c){}
+	                   \_ HERE
+==== 99: ERROR: method C3::m4 with prototype
+	public void(int, int =, resource ...)
+	is not call-compatible with IF1::m4 with prototype
+	public void(int, int =, string ...)
+	(the type of the variadic parameter is not call-compatible)
+101:	
+102:	// variadic param becomes default
+103:	class C4 implements IF1 {
+104:		function m1(/*. string .*/ $a=NULL){}
+105:		function m2(/*. int .*/ $a, /*. string .*/ $b=NULL){}
+
+		function m1(/*. string .*/ $a=NULL){}
+	                                     \_ HERE
+==== 104: notice: variable $a assigned but never used
+
+		function m1(/*. string .*/ $a=NULL){}
+	                   \_ HERE
+==== 104: ERROR: method C4::m1 with prototype
+	public void(string =)
+	is not call-compatible with IF1::m1 with prototype
+	public void(string ...)
+	(missing variadic parameter)
+106:		function m3(/*. int .*/ $a = 0, /*. string .*/ $b=NULL){}
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b=NULL){}
+	                                                     \_ HERE
+==== 105: notice: variable $b assigned but never used
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b=NULL){}
+	                                  \_ HERE
+==== 105: notice: variable $a assigned but never used
+
+		function m2(/*. int .*/ $a, /*. string .*/ $b=NULL){}
+	                   \_ HERE
+==== 105: ERROR: method C4::m2 with prototype
+	public void(int, string =)
+	is not call-compatible with IF1::m2 with prototype
+	public void(int, string ...)
+	(missing variadic parameter)
+107:		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c=NULL){}
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b=NULL){}
+	                                                         \_ HERE
+==== 106: notice: variable $b assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b=NULL){}
+	                                  \_ HERE
+==== 106: notice: variable $a assigned but never used
+
+		function m3(/*. int .*/ $a = 0, /*. string .*/ $b=NULL){}
+	                   \_ HERE
+==== 106: ERROR: method C4::m3 with prototype
+	public void(int =, string =)
+	is not call-compatible with IF1::m3 with prototype
+	public void(int =, string ...)
+	(missing variadic parameter)
+108:	}
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c=NULL){}
+	                                                             \_ HERE
+==== 107: notice: variable $c assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c=NULL){}
+	                                      \_ HERE
+==== 107: notice: variable $b assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c=NULL){}
+	                                  \_ HERE
+==== 107: notice: variable $a assigned but never used
+
+		function m4(/*. int .*/ $a, $b = 0, /*. string .*/ $c=NULL){}
+	                   \_ HERE
+==== 107: ERROR: method C4::m4 with prototype
+	public void(int, int =, string =)
+	is not call-compatible with IF1::m4 with prototype
+	public void(int, int =, string ...)
+	(missing variadic parameter)
+109:	
+110:	// gracefully complains about unsupported features:
+111:	f(...[1,2,3]);
+
+	f(...[1,2,3]);
+	     \_ HERE
+==== 111: ERROR: parameters unpacking `...' not supported (PHPLint limitation)
+
+	f(...[1,2,3]);
+	             \_ HERE
+==== 111: ERROR: calling f declared in line 5, argument no. 1: found type int[int] is not assignment compatible with $a of type int
+112:	function f12(/*. mixed .*/ & ... $a){ if($a); }
+
+	function f12(/*. mixed .*/ & ... $a){ if($a); }
+	                                   \_ HERE
+==== 112: ERROR: variadic parameter by reference is not supported (PHPLint limitation)
+
+	function f12(/*. mixed .*/ & ... $a){ if($a); }
+	                                            \_ HERE
+==== 112: ERROR: found expression of type mixed[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+113:	/*. forward void function f13(string & ... $a); .*/
+114:	
+115:	// Bug fix: crash on unknown type of variadic parameter:
+116:	function f14(...$a){ if($a); }
+
+	function f14(...$a){ if($a); }
+	                   \_ HERE
+==== 116: ERROR: undefined type for argument $a. Hint: you may indicate an explicit type (example: `/*.int.*/ $a') or assign a default value (example: `$a=123') or add a DocBlock line tag (example: `@param int $a').
+
+	function f14(...$a){ if($a); }
+	                           \_ HERE
+==== 116: ERROR: found expression of type unknown[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+117:	f14(1,2,3);
+
+	/*. forward void function f13(string & ... $a); .*/
+	                             \_ HERE
+==== 113: ERROR: missing implementation of the forward function f13
+END parsing of 5-variadic-parameters.php
+==== ?:?: notice: unused package ../../../../../../stdlib/errors.php
+==== ?:?: notice: required module core.php
+==== ?:?: notice: required module file.php
+==== ?:?: notice: required module phpinfo.php
+==== ?:?: notice: required package ../../../../../../stdlib/InternalException.php
+Overall test results: 34 errors, 0 warnings.

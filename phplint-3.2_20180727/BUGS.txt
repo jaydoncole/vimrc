@@ -1,0 +1,164 @@
+KNOWN BUGS AND MISSING FEATURES
+===============================
+
+- Arguments of variadic function cannot be passed by reference. This restriction
+makes impossible to declare functions like scanf("...", $x) as PHPLint always
+complains "$x is not defined.
+
+- Parameters unpacking "... EXPR" not supported.
+
+- foreach(EXPR as ...: EXPR must be a proper variable, not a generic
+expression. For example, foreach(array(1,2,3) as ... isn't allowed by PHP.
+
+- $a[][1] = 3;  yields fatal error because PHPLint pretends the [] operator
+  be the very last index.
+
+- Namespace resolution is performed in the order of declaration, while PHP
+  resolves names after parsing stage. Then, for example:
+  
+  namespace xxx;
+  echo strlen("aaa");
+  function strlen($s){ return $s; }
+  
+  PHPLint assumes "echo" will call \strlen(), while PHP actually will call
+  \xxx\strlen(), this latter function being still unknown to PHPLint at the
+  time the "echo" statement gets parsed. Things go in the right way if all
+  is declared in bottom-up order.
+
+- PHP (at least up to 7.0.0) does not allow to lower the visibility of the constructor
+  in a derived class. For example:
+
+class A {
+	public function __construct(){}
+}
+
+class B extends A {
+	private function __construct() {
+		parent::__construct();
+	}
+}
+
+causes this fatal error at compile-time:
+Fatal error: Access level to B::__construct() must be public (as in class A) in ...
+PHPLint, instead, passes that code as valid because constructors do not extend
+constructors, so the general visibility rule does not apply here.
+Discussion still open on https://bugs.php.net/bug.php?id=61970
+
+- The constructor of an anonymous class cannot have formal
+  arguments passed by reference, like in this example:
+
+	$o = new class($x) {
+		function __construct(int & $n){ $n = 123; }
+	};
+
+  Here PHPLint signals error because it parses the actual argument before
+  the constructor definition, and it assumes pass by value. The fix would
+  require a double-pass parser.
+
+- In the type model of PHPLint there is an "object" class and any class extends
+  this latter, so all classes (abstract and concrete) have a common base class
+  that matches an object of any class.
+  This is not true at runtime, because in PHP there is not an "object" class and
+  there is not a common base class, and so there is not an "object" type hint and
+  there is not way to match an object of any class. "$x instanceof object" must
+  be rewritten as "is_object($x)".
+
+- The division operator always returns a float value, also when the two operators
+  are statically evaluated numbers and the result has no fractional part. This
+  means a simple expression like 6/2 is assumed to give 3.0, not 3. Implications:
+	const C = 6/2;
+  is of the float type 3.0, while PHP evaluates it as 3. A programmer expecting
+  int gets float instead. Variable statically float, may get an int instead.
+  cast("float[int]", $v) may fail if some value result int rather than float.
+  Although this might be fixed for static expressions, it cannot be fixed in
+  the general case because PHP sets the type only at runtime.
+
+- Numeric values and static expressions are evaluated using the currently available
+  PHP installation, and overflow is not detected. This means that large numbers
+  may bring to unexpected results, or the same value might be within the allowed
+  range on a system but not on another. For example, 0xffffffff overflows the int
+  capacity on a 32-bits system, but it is valid on a 64-bits system. Example:
+	<?php
+	const X = 0xffffffff;
+	if(X);
+	var_dump(X);
+	?>
+  Here PHPLint tells that X is int, but running on 32-bits system displays
+  float(4294967295). Possible ways to address this problem:
+  1. Add a --32-bits and --64-bits options that validates the source vs. a given
+     platform, being 32-bits the default; the generated report should then display
+     the int width the source has been validated for.
+  2. Detect possible overflow on some platform, reporting the source compatibility
+     or incompatibility against each possible platform.
+  Whatever the solution, at runtime expressions may overflow anyway.
+
+
+KNOWN MISSING FEATURES WHICH IS UNLIKELY WILL EVER BE IMPLEMENTED
+=================================================================
+
+- Assignment of a single char to a string not allowed in PHPLint:
+
+  $s = "abc";
+  $s[1] = "z"; // --> invalid left hand side in assignment
+
+  The behavior is mostly undefined or erratic, see
+  https://bugs.php.net/bug.php?id=71572
+
+  Rationale: mostly undefined behavior; leads to write unsafe and very
+  inefficient programs.
+
+- Literal binary numbers like 0b1010. Hint: use decimal, octal o hex numbers
+  instead.
+  Rationale: useless.
+
+- Variable variable: $$v.
+- Variable function: $f().
+- Variable class: new $c().
+- Variable method: $obj->$m().
+  Rationale: can't validate.
+  Possible alternatives:
+  $$v: usually an associative array.
+  $f($x): interface defining a method F, then use a specific class for every
+  kind of value for $x, then $x->F() to perform the action F on $x.
+  new $c(): either use reflection to create an instance of a named class whose
+  ctor does not require parameters, or simply replace with an object already
+  instantiated, or use a builder.
+  $obj->$m(): interface defining a method M, then use a specific class for every
+  kind of value for $obj, then $obj->M() to perform the action M on $obj.
+
+- Variable name in curly braces ${xxx}.
+  Rationale: useless flexibility in a statically validated source.
+ 
+- Not implemented:
+  goto LABEL;
+  break EXPR; (only "break;" without argument is implemented)
+  continue EXPR; (only "continue;" without argument is implemented)
+  list() = EXPR
+  Rationale: very difficult if not impossible to validate; leads to bad practices.
+
+- Alternate syntax for control structures, example:
+  if(EXPR):  ...  endif;
+  switch(EXPR):   endswitch;
+  ...
+  then the following keywords are forbidden by PHPLint: enddeclare,
+  endwhile, endfor, endswitch, endif, endforeach.
+  Rationale: redundant syntax.
+
+- "case LABEL": the label must be a static expression evaluable at parse time,
+  then cannot include variables nor functions.
+  Rationale: static expression allows optimizations in future compilers.
+
+- Files included by require*() and include*() cannot "return EXPR;" a value, nor
+  can "return;" these statements are allowed only inside functions and methods.
+  Rationale: improper programming practice where a simple function would fit.
+
+- Traits.
+  Rationale: redundant; leads to improper usage of classes in place of arrays or
+  other more specific data structures.
+
+- Anonymous functions (also known as "closures"). Hint: use classes and
+  anonymous classes instead.
+  Rationale: big complexity added for little gain.
+
+- Generators.
+  Rationale: big complexity added for little gain.

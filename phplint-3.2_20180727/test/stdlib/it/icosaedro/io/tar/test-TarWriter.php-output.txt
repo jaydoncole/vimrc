@@ -1,0 +1,105 @@
+
+Listing: in/one-empty-file.tar
+    Header: filename="samples/file-empty.txt", mode=0644, uid=1000, gid=100, size=0, mtime=2015-12-28T21:59:15+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/samples/file-empty.txt
+
+Extracting: in/one-empty-file.tar --> /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/EXTRACT-one-empty-file.tar
+
+Listing: in/two-files.tar
+    Header: filename="samples/file-empty.txt", mode=0644, uid=1000, gid=100, size=0, mtime=2015-12-28T21:59:15+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/samples/file-empty.txt
+    Header: filename="samples/file-hello.txt", mode=0644, uid=1000, gid=100, size=36, mtime=2015-12-28T22:00:31+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/samples/file-hello.txt
+    Content: "Content of the file file-hello.txt.\n"
+
+Extracting: in/two-files.tar --> /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/EXTRACT-two-files.tar
+
+Listing: in/with-very-long-file-name.tar
+    Header: filename="samples/file-with-very-long-name-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.txt", mode=0644, uid=1000, gid=100, size=0, mtime=2015-12-31T16:54:43+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/samples/file-with-very-long-name-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.txt
+
+Extracting: in/with-very-long-file-name.tar --> /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/EXTRACT-with-very-long-file-name.tar
+
+Listing: in/with-subdir-and-symlink.tar
+    Header: filename="with-subdir-and-symlink/", mode=0755, uid=1000, gid=100, size=0, mtime=2016-01-06T09:46:55+00:00, type=5, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/with-subdir-and-symlink
+    Header: filename="with-subdir-and-symlink/subdir/", mode=0755, uid=1000, gid=100, size=0, mtime=2016-01-06T09:48:53+00:00, type=5, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/with-subdir-and-symlink/subdir
+    Header: filename="with-subdir-and-symlink/subdir/ciao.txt", mode=0644, uid=1000, gid=100, size=6, mtime=2016-01-06T09:47:34+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/with-subdir-and-symlink/subdir/ciao.txt
+    Content: "Ciao.\n"
+    Header: filename="with-subdir-and-symlink/subdir/hello-link.txt", mode=0777, uid=1000, gid=100, size=0, mtime=2016-01-06T09:48:53+00:00, type=2, link="../hello.txt", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/with-subdir-and-symlink/subdir/hello-link.txt
+    Header: filename="with-subdir-and-symlink/hello.txt", mode=0644, uid=1000, gid=100, size=7, mtime=2016-01-06T09:46:55+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/with-subdir-and-symlink/hello.txt
+    Content: "Hello.\n"
+
+Extracting: in/with-subdir-and-symlink.tar --> /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/EXTRACT-with-subdir-and-symlink.tar
+Random data test: Non-octal
+
+Listing: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/random.tar
+it\icosaedro\io\CorruptedException: not an octal number: ????????
+Random data test: Octal digits 0
+
+Listing: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/random.tar
+it\icosaedro\io\CorruptedException: invalid checksum
+
+Listing: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/generated-in-memory.tar
+    Header: filename="project/", mode=0700, uid=0, gid=0, size=0, mtime=1970-01-01T00:00:01+00:00, type=5, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project
+    Header: filename="project/readme.txt", mode=0600, uid=0, gid=0, size=31, mtime=1970-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/readme.txt
+    Content: "Content of the readme.txt file."
+    Header: filename="project/document.txt", mode=0600, uid=0, gid=0, size=33, mtime=1970-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/document.txt
+    Content: "Content of the document.txt file."
+    Header: filename="project/subdir/", mode=0700, uid=0, gid=0, size=0, mtime=1970-01-01T00:00:01+00:00, type=5, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/subdir
+    Header: filename="project/subdir/file-empty.txt", mode=0644, uid=1000, gid=100, size=0, mtime=1970-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/subdir/file-empty.txt
+    Header: filename="project/subdir/512-bytes-file.txt", mode=0644, uid=1000, gid=100, size=512, mtime=1970-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/subdir/512-bytes-file.txt
+    Content: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123"
+    Content: "456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n01234567"
+    Content: "89abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789ab"
+    Content: "cdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef"
+    Content: "0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123"
+    Content: "456789abcde\n"
+    Header: filename="project/subdir/513-bytes-file.txt", mode=0644, uid=1000, gid=100, size=513, mtime=1970-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="salsi", gname="users", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/project/subdir/513-bytes-file.txt
+    Content: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123"
+    Content: "456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n01234567"
+    Content: "89abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789ab"
+    Content: "cdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef"
+    Content: "0123456789abcdef0123456789abcdef0123456789abcde\n0123456789abcdef0123456789abcdef0123456789abcdef0123"
+    Content: "456789abcde\n\n"
+
+Listing: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/created1.tar.gz
+    Header: filename="test1/empty.txt", mode=0600, uid=0, gid=0, size=0, mtime=2000-01-01T00:00:00+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/empty.txt
+    Header: filename="test1/512-bytes.txt", mode=0600, uid=0, gid=0, size=512, mtime=2000-01-01T00:00:00+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/512-bytes.txt
+    Content: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    Content: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    Content: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    Content: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    Content: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    Content: "xxxxxxxxxxxx"
+    Header: filename="test1/file1.txt", mode=0600, uid=0, gid=0, size=21, mtime=2000-01-01T00:00:01+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/file1.txt
+    Content: "Content of file1.txt."
+    Header: filename="test1/file2.txt", mode=0600, uid=0, gid=0, size=21, mtime=2000-01-01T00:00:02+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/file2.txt
+    Content: "Content of file2.txt."
+    Header: filename="test1/file3dir/file3.txt", mode=0600, uid=0, gid=0, size=30, mtime=2000-01-01T00:00:03+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/file3dir/file3.txt
+    Content: "Content of file3dir/file3.txt."
+    Header: filename="test1/file-with-very-long-name-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.txt", mode=0600, uid=0, gid=0, size=147, mtime=2000-01-01T00:00:04+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/file-with-very-long-name-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.txt
+    Content: "Content of test1/file-with-very-long-name-1234567890123456789012345678901234567890123456789012345678"
+    Content: "901234567890123456789012345678901234567890.txt."
+    Header: filename="test1/file5.txt", mode=0600, uid=0, gid=0, size=21, mtime=2000-01-01T00:00:05+00:00, type=0, link="", UStar version="", uname="root", gname="root", devmajor=0, devminor=0
+    Destination: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/test1/file5.txt
+    Content: "Content of file5.txt."
+
+Extracting: /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/created1.tar.gz --> /home/salsi/src/phplint/test/stdlib/it/icosaedro/io/tar/out/EXTRACT-created1.tar.gz

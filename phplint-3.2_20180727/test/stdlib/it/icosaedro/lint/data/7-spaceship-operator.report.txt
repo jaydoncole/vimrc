@@ -1,0 +1,46 @@
+BEGIN parsing of 7-spaceship-operator.php
+1:	<?php
+2:	
+3:	if( 1 <=> 2 );
+
+	if( 1 <=> 2 );
+	             \_ HERE
+==== 3: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+4:	
+5:	if( 0 <=> 3.14 );
+
+	if( 0 <=> 3.14 );
+	                \_ HERE
+==== 5: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+6:	
+7:	if( "a" <=> "b" );
+
+	if( "a" <=> "b" );
+	               \_ HERE
+==== 7: ERROR: EXPR <=> ...: only int and float types supported for the spaceship operator, found type string
+
+	if( "a" <=> "b" );
+	               \_ HERE
+==== 7: ERROR: ... <=> EXPR: only int and float types supported for the spaceship operator, found type string
+
+	if( "a" <=> "b" );
+	                 \_ HERE
+==== 7: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+8:	
+9:	/*. resource .*/ function f(){ return NULL; }
+10:	if( array() <=> f() );
+
+	if( array() <=> f() );
+	                 \_ HERE
+==== 10: ERROR: EXPR <=> ...: only int and float types supported for the spaceship operator, found type resource
+
+	if( array() <=> f() );
+	                 \_ HERE
+==== 10: ERROR: ... <=> EXPR: only int and float types supported for the spaceship operator, found type resource
+
+	if( array() <=> f() );
+	                     \_ HERE
+==== 10: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+11:	
+END parsing of 7-spaceship-operator.php
+Overall test results: 8 errors, 0 warnings.

@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Bt_ dispatcher page. All the requests coming from the client are routed
+ * by this page to the appropriate forward call function based on the window
+ * instance (the "w" parameter) and on the entry number of the bt file
+ * (the "i" parameter). This page should be named "index.php" and located under
+ * the "/bt/index.php" path of the web server document root directory (or at
+ * least these are the expected settings; to change, look at the
+ * com\acme\www\Common class and change accordingly).
+ * @package Dispatcher.
+ */
+
+require_once __DIR__ . "/../../phplint/stdlib/all.php";
+
+use com\acme\www\Dispatcher;
+
+Dispatcher::dispatchRequest();

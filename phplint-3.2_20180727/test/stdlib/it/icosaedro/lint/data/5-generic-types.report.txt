@@ -1,0 +1,198 @@
+BEGIN parsing of 5-generic-types.php
+1:	<?php
+2:	
+3:	// Checking all the contexts where a type parameter is allowed.
+4:	
+5:	require_once __DIR__ . "/../../../../../../stdlib/all.php";
+6:	
+7:	class BareClass {}
+8:	class Pair/*. <A,B> .*/ {}
+9:	
+10:	interface IF1 /*. <IF1_T> .*/ {
+11:		/*. IF1_T .*/ function m(/*. IF1_T .*/ $x); // ok
+12:	}
+13:	
+14:	class C1 /*. <C1_T> .*/  {
+15:		function m1(/*. C1_T .*/ $x){}
+16:	}
+
+		function m1(/*. C1_T .*/ $x){}
+	                                   \_ HERE
+==== 15: notice: variable $x assigned but never used
+17:	
+18:	class C2 /*. <C2_T> .*/
+19:		extends C1 /*. <C2_T> .*/
+20:		implements IF1/*.<C2_T>.*/
+21:	{
+22:	
+23:		function m(/*. C2_T .*/ $x){ return $x; } // ok
+24:		function m1(C2_T $x){} // <-- ERROR: type parameter in actual PHP code
+
+		function m1(C2_T $x){} // <-- ERROR: type parameter in actual PHP code
+	                         \_ HERE
+==== 24: ERROR: formal type parameter in actual PHP code: C2#C2_T
+25:	
+26:	}
+
+		function m1(C2_T $x){} // <-- ERROR: type parameter in actual PHP code
+	                           \_ HERE
+==== 24: notice: variable $x assigned but never used
+27:	
+28:	cast("C1", 1); // ERROR: generic in cast()
+
+	cast("C1", 1); // ERROR: generic in cast()
+	             \_ HERE
+==== 28: ERROR: forbidden cast from int to C1<?>
+29:	cast("C1<BareClass>", 1); // ERROR: generic in cast()
+
+	cast("C1<BareClass>", 1); // ERROR: generic in cast()
+	                     \_ HERE
+==== 29: ERROR: forbidden cast to generic type: C1<BareClass>
+
+	cast("C1<BareClass>", 1); // ERROR: generic in cast()
+	                        \_ HERE
+==== 29: ERROR: forbidden cast from int to C1<BareClass>
+30:	cast("C1<BareClass>[int]", 1); // ERROR: generic in cast()
+
+	cast("C1<BareClass>[int]", 1); // ERROR: generic in cast()
+	                          \_ HERE
+==== 30: ERROR: forbidden cast to generic type: C1<BareClass>[int]
+
+	cast("C1<BareClass>[int]", 1); // ERROR: generic in cast()
+	                             \_ HERE
+==== 30: ERROR: forbidden cast from int to C1<BareClass>[int]
+31:	cast("array[]C1", 1); // ERROR: generic in cast()
+
+	cast("array[]C1", 1); // ERROR: generic in cast()
+	                    \_ HERE
+==== 31: ERROR: forbidden cast from int to C1<?>[]
+32:	
+33:	
+34:	
+35:	class BAD /*. <A,A> .*/ {} // <-- ERROR: duplicated format type
+
+	class BAD /*. <A,A> .*/ {} // <-- ERROR: duplicated format type
+	                  \_ HERE
+==== 35: ERROR: duplicated type name
+36:	
+37:	class MyException/*.<T>.*/ extends Exception {} // <-- ERROR: exception cannot be generic
+
+	class MyException/*.<T>.*/ extends Exception {} // <-- ERROR: exception cannot be generic
+	                                              \_ HERE
+==== 37: ERROR: exceptions cannot be generic
+38:	
+39:	class C3/*. <T> .*/ {
+40:		public /*. T .*/ $p1;
+41:		static /*. T .*/ $p2;
+
+		static /*. T .*/ $p2;
+	                            \_ HERE
+==== 41: ERROR: static property cannot be a partially actualized class
+42:		static function m(/*. T .*/ $x){}
+43:		static /*. T .*/ function m2(/*. T .*/ $x){ return NULL; }
+
+		static function m(/*. T .*/ $x){}
+	                                      \_ HERE
+==== 42: notice: variable $x assigned but never used
+
+		static function m(/*. T .*/ $x){}
+	                         \_ HERE
+==== 42: ERROR: static method cannot have a partially actualized class: C3#T $x
+44:		/** @param T $x */
+
+		static /*. T .*/ function m2(/*. T .*/ $x){ return NULL; }
+	                                                 \_ HERE
+==== 43: notice: variable $x assigned but never used
+
+		static /*. T .*/ function m2(/*. T .*/ $x){ return NULL; }
+	                                    \_ HERE
+==== 43: ERROR: static method cannot return a partially actualized class
+
+		static /*. T .*/ function m2(/*. T .*/ $x){ return NULL; }
+	                                    \_ HERE
+==== 43: ERROR: static method cannot have a partially actualized class: C3#T $x
+45:		static function m3($x){} // <-- ERROR: generic param in static method
+46:		/** @return T */
+
+		static function m3($x){} // <-- ERROR: generic param in static method
+	                             \_ HERE
+==== 45: notice: variable $x assigned but never used
+
+		static function m3($x){} // <-- ERROR: generic param in static method
+	                          \_ HERE
+==== 45: ERROR: static method cannot have a partially actualized class: C3#T $x
+47:		static function m4(){ return NULL; } // <-- ERROR: generic return in static method
+48:	
+49:		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+
+		static function m4(){ return NULL; } // <-- ERROR: generic return in static method
+	                          \_ HERE
+==== 47: ERROR: static method cannot return a partially actualized class
+
+		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+	                      \_ HERE
+==== 49: ERROR: formal type parameter in actual PHP code: C3#T
+
+		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+	                          \_ HERE
+==== 49: ERROR: return type declaration not allowed (PHP 7)
+
+		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+	                            \_ HERE
+==== 49: ERROR: formal type parameter in actual PHP code: C3#T
+50:	
+51:		function m6(){
+
+		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+	                   \_ HERE
+==== 49: ERROR: missing `return' in at least one execution path in non-void method C3<C3#T>::m5
+
+		function m5(T $x): T{} // <-- ERROR: type parameter in actual PHP code
+	                        \_ HERE
+==== 49: notice: variable $x assigned but never used
+52:			$m = /*. (mixed) .*/ NULL;
+53:			cast("T", $m); // <-- ERROR: cast requires normal class
+
+			cast("T", $m); // <-- ERROR: cast requires normal class
+	                         \_ HERE
+==== 53: ERROR: forbidden cast to generic type: C3#T
+54:			cast("Pair<object,T>", $m); // <-- ERROR: cast requires normal class
+
+			cast("Pair<object,T>", $m); // <-- ERROR: cast requires normal class
+	                                      \_ HERE
+==== 54: ERROR: forbidden cast to generic type: Pair<object,C3#T>
+55:			cast("Pair<object,object>", $m); // <-- ERROR: cast requires normal class
+
+			cast("Pair<object,object>", $m); // <-- ERROR: cast requires normal class
+	                                           \_ HERE
+==== 55: ERROR: forbidden cast to generic type: Pair<object,object>
+56:		}
+57:	}
+END parsing of 5-generic-types.php
+==== ?:?: notice: unused package ../../../../../../stdlib/all.php
+==== ?:?: notice: unused package ../../../../../../stdlib/autoload.php
+==== ?:?: notice: unused package ../../../../../../stdlib/errors.php
+==== ?:?: notice: required module core.php
+==== ?:?: notice: required module file.php
+==== ?:?: notice: required module phpinfo.php
+==== ?:?: notice: required module spl.php
+==== ?:?: notice: required package ../../../../../../stdlib/AutoloadException.php
+==== ?:?: notice: required package ../../../../../../stdlib/cast.php
+==== ?:?: notice: required package ../../../../../../stdlib/CastException.php
+==== ?:?: notice: required package ../../../../../../stdlib/InternalException.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/containers/Printable.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayBothType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayIntType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ArrayStringType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/BooleanType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ClassType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/FloatType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/IntType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/MixedType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/NullType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ObjectType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/ResourceType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/StringType.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/TypeInterface.php
+==== ?:?: notice: required package ../../../../../../stdlib/it/icosaedro/phplint/Types.php
+Overall test results: 22 errors, 0 warnings.

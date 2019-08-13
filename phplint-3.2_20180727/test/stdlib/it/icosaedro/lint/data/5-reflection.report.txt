@@ -1,0 +1,748 @@
+BEGIN parsing of 5-reflection.php
+1:	<?php
+2:	
+3:	/*
+4:		2007-06-02  These examples come from
+5:		www.php.net/manual/en/language.oop5.reflection.php
+6:		They are all about reflection classes. Only minor changes
+7:		made to make IDs different from PHPLint keywords:
+8:	
+9:		String --> String_
+10:		Class  --> Class_
+11:		$class --> $class_
+12:		Object --> Object_
+13:	*/
+14:	
+15:	/*.
+16:		require_module 'core';
+17:		require_module 'standard_reflection';
+18:	.*/
+19:	
+20:	# Example 19.33. Basic usage of the reflection API
+21:	
+22:	Reflection::export(new ReflectionClass('Exception'));
+23:	
+24:	
+25:	
+26:	
+27:	# Example 19.34. Using the ReflectionFunction class
+28:	
+29:	/**
+30:	 * A simple counter
+31:	 *
+32:	 * @return    int
+33:	 */
+34:	function counter()
+35:	{
+36:	    static $c = 0;
+37:	    return $c++;
+38:	}
+39:	
+40:	// Create an instance of the Reflection_Function class
+41:	$func = new ReflectionFunction('counter');
+42:	
+43:	// Print out basic information
+44:	printf(
+45:	    "===> The %s function '%s'\n".
+46:	    "     declared in %s\n".
+47:	    "     lines %d to %d\n",
+48:	    $func->isInternal() ? 'internal' : 'user-defined',
+49:	    $func->getName(),
+50:	    $func->getFileName(),
+51:	    $func->getStartLine(),
+52:	    $func->getEndline()
+
+	    $func->getEndline()
+	                      \_ HERE
+==== 52: ERROR: method	getEndline
+	was declared as
+		ReflectionFunctionAbstract::getEndLine
+	that differs by upper/lower-case letters only
+53:	);
+54:	
+55:	// Print documentation comment
+56:	printf("---> Documentation:\n %s\n", var_export($func->getDocComment(), TRUE));
+
+	printf("---> Documentation:\n %s\n", var_export($func->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 56: notice: triggering E_WARNING
+
+	printf("---> Documentation:\n %s\n", var_export($func->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 56: Warning: unhandled error E_WARNING at global scope
+57:	
+58:	// Print static variables if existant
+59:	if ($statics = $func->getStaticVariables())
+
+	if ($statics = $func->getStaticVariables())
+	                                           \_ HERE
+==== 59: ERROR: found expression of type mixed[string], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+60:	{
+61:	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+
+	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+	                                                     \_ HERE
+==== 61: notice: triggering E_WARNING
+
+	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+	                                                     \_ HERE
+==== 61: Warning: unhandled error E_WARNING at global scope
+62:	}
+63:	
+64:	// Invoke the function
+65:	printf("---> Invokation results in: ");
+66:	var_dump($func->invoke());
+67:	
+68:	
+69:	// you may prefer to use the export() method
+70:	echo "\nReflectionFunction::export() results:\n";
+71:	echo ReflectionFunction::export('counter', false);
+
+	echo ReflectionFunction::export('counter', false);
+	                                                  \_ HERE
+==== 71: notice: throwing ReflectionException
+
+	echo ReflectionFunction::export('counter', false);
+	                                                  \_ HERE
+==== 71: Warning: uncaught exception ReflectionException at global scope
+72:	
+73:	
+74:	
+75:	
+76:	
+77:	#### Example 19.35. Using the ReflectionParameter class
+78:	
+79:	function foo($a, $b, $c) { }
+
+	function foo($a, $b, $c) { }
+	                \_ HERE
+==== 79: ERROR: undefined type for argument $a. Hint: you may indicate an explicit type (example: `/*.int.*/ $a') or assign a default value (example: `$a=123') or add a DocBlock line tag (example: `@param int $a').
+
+	function foo($a, $b, $c) { }
+	                    \_ HERE
+==== 79: ERROR: undefined type for argument $b. Hint: you may indicate an explicit type (example: `/*.int.*/ $b') or assign a default value (example: `$b=123') or add a DocBlock line tag (example: `@param int $b').
+
+	function foo($a, $b, $c) { }
+	                        \_ HERE
+==== 79: ERROR: undefined type for argument $c. Hint: you may indicate an explicit type (example: `/*.int.*/ $c') or assign a default value (example: `$c=123') or add a DocBlock line tag (example: `@param int $c').
+80:	function bar(Exception $a, &$b, $c) { }
+
+	function foo($a, $b, $c) { }
+	                       \_ HERE
+==== 79: notice: variable $c assigned but never used
+
+	function foo($a, $b, $c) { }
+	                   \_ HERE
+==== 79: notice: variable $b assigned but never used
+
+	function foo($a, $b, $c) { }
+	               \_ HERE
+==== 79: notice: variable $a assigned but never used
+
+	function bar(Exception $a, &$b, $c) { }
+	                               \_ HERE
+==== 80: ERROR: undefined type for argument $b. Hint: you may indicate an explicit type (example: `/*.int.*/ $b') or assign a default value (example: `$b=123') or add a DocBlock line tag (example: `@param int $b').
+
+	function bar(Exception $a, &$b, $c) { }
+	                                   \_ HERE
+==== 80: ERROR: undefined type for argument $c. Hint: you may indicate an explicit type (example: `/*.int.*/ $c') or assign a default value (example: `$c=123') or add a DocBlock line tag (example: `@param int $c').
+81:	function baz(ReflectionFunction $a, $b = 1, $c = null) { }
+
+	function bar(Exception $a, &$b, $c) { }
+	                                  \_ HERE
+==== 80: notice: variable $c assigned but never used
+
+	function bar(Exception $a, &$b, $c) { }
+	                              \_ HERE
+==== 80: notice: variable $b assigned but never used
+
+	function bar(Exception $a, &$b, $c) { }
+	                         \_ HERE
+==== 80: notice: variable $a assigned but never used
+82:	function abc() { }
+
+	function baz(ReflectionFunction $a, $b = 1, $c = null) { }
+	                                              \_ HERE
+==== 81: notice: variable $c assigned but never used
+
+	function baz(ReflectionFunction $a, $b = 1, $c = null) { }
+	                                      \_ HERE
+==== 81: notice: variable $b assigned but never used
+
+	function baz(ReflectionFunction $a, $b = 1, $c = null) { }
+	                                  \_ HERE
+==== 81: notice: variable $a assigned but never used
+83:	
+84:	// Create an instance of Reflection_Function with the
+85:	// parameter given from the command line.
+86:	$reflect = new ReflectionFunction($argv[1]);
+87:	
+88:	echo $reflect;
+89:	
+90:	foreach ($reflect->getParameters() as $i => $param) {
+91:	    printf(
+92:	        "-- Parameter #%d: %s {\n".
+93:	        "   Class: %s\n".
+94:	        "   Allows NULL: %s\n".
+95:	        "   Passed to by reference: %s\n".
+96:	        "   Is optional?: %s\n".
+97:	        "}\n",
+98:	        $i,
+99:	        $param->getName(),
+100:	        var_export($param->getClass(), TRUE),
+
+	        var_export($param->getClass(), TRUE),
+	                   \_ HERE
+==== 100: notice: triggering E_WARNING
+
+	        var_export($param->getClass(), TRUE),
+	                   \_ HERE
+==== 100: Warning: unhandled error E_WARNING at global scope
+101:	        var_export($param->allowsNull(), TRUE),
+
+	        var_export($param->allowsNull(), TRUE),
+	                   \_ HERE
+==== 101: notice: triggering E_WARNING
+
+	        var_export($param->allowsNull(), TRUE),
+	                   \_ HERE
+==== 101: Warning: unhandled error E_WARNING at global scope
+102:	        var_export($param->isPassedByReference(), TRUE),
+
+	        var_export($param->isPassedByReference(), TRUE),
+	                   \_ HERE
+==== 102: notice: triggering E_WARNING
+
+	        var_export($param->isPassedByReference(), TRUE),
+	                   \_ HERE
+==== 102: Warning: unhandled error E_WARNING at global scope
+103:	        $param->isOptional() ? 'yes' : 'no'
+104:	    );
+105:	}
+106:	
+107:	
+108:	
+109:	#### Example 19.36. Using the ReflectionClass class
+110:	
+111:	class Object_
+112:	{
+113:	    // ...
+114:	}
+115:	
+116:	/**
+117:	 * A counter class
+118:	 */
+119:	class Counter extends Object_ implements Serializable
+120:	{
+121:	    const START = 0;
+122:	    private static $c = Counter::START;
+123:	
+124:	    /**
+125:	     * Invoke counter
+126:	     *
+127:	     * @access  public
+128:	     * @return  int
+129:	     */
+130:	    public function count() {
+
+	     */
+	       \_ HERE
+==== 129: ERROR: unexpected DocBlock line tag `@access'
+
+	    public function count() {
+	                   \_ HERE
+==== 130: ERROR: invalid meta-code or DocBlock @access line-tag to set visibility, use proper language keywords
+131:	        return self::$c++;
+132:	    }
+133:	}
+134:	
+135:	// Create an instance of the ReflectionClass class
+136:	$class_ = new ReflectionClass('Counter');
+
+	class Counter extends Object_ implements Serializable
+	              \_ HERE
+==== 119: ERROR: missing implementations in Counter:
+	Serializable::unserialize
+	Serializable::serialize
+137:	
+138:	// Print out basic information
+139:	printf(
+140:	    "===> The %s%s%s %s '%s' [extends %s]\n" .
+141:	    "     declared in %s\n" .
+142:	    "     lines %d to %d\n" .
+143:	    "     having the modifiers %d [%s]\n",
+144:	        $class_->isInternal() ? 'internal' : 'user-defined',
+145:	        $class_->isAbstract() ? ' abstract' : '',
+146:	        $class_->isFinal() ? ' final' : '',
+147:	        $class_->isInterface() ? 'interface' : 'class',
+148:	        $class_->getName(),
+149:	        var_export($class_->getParentClass(), TRUE),
+
+	        var_export($class_->getParentClass(), TRUE),
+	                   \_ HERE
+==== 149: notice: triggering E_WARNING
+
+	        var_export($class_->getParentClass(), TRUE),
+	                   \_ HERE
+==== 149: Warning: unhandled error E_WARNING at global scope
+150:	        $class_->getFileName(),
+151:	        $class_->getStartLine(),
+152:	        $class_->getEndline(),
+
+	        $class_->getEndline(),
+	                            \_ HERE
+==== 152: ERROR: method	getEndline
+	was declared as
+		ReflectionClass::getEndLine
+	that differs by upper/lower-case letters only
+153:	        $class_->getModifiers(),
+154:	        implode(' ', Reflection::getModifierNames($class_->getModifiers()))
+155:	);
+156:	
+157:	// Print documentation comment
+158:	printf("---> Documentation:\n %s\n", var_export($class_->getDocComment(), TRUE));
+
+	printf("---> Documentation:\n %s\n", var_export($class_->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 158: notice: triggering E_WARNING
+
+	printf("---> Documentation:\n %s\n", var_export($class_->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 158: Warning: unhandled error E_WARNING at global scope
+159:	
+160:	// Print which interfaces are implemented by this class
+161:	printf("---> Implements:\n %s\n", var_export($class_->getInterfaces(), TRUE));
+
+	printf("---> Implements:\n %s\n", var_export($class_->getInterfaces(), TRUE));
+	                                             \_ HERE
+==== 161: notice: triggering E_WARNING
+
+	printf("---> Implements:\n %s\n", var_export($class_->getInterfaces(), TRUE));
+	                                             \_ HERE
+==== 161: Warning: unhandled error E_WARNING at global scope
+162:	
+163:	// Print class constants
+164:	printf("---> Constants: %s\n", var_export($class_->getConstants(), TRUE));
+
+	printf("---> Constants: %s\n", var_export($class_->getConstants(), TRUE));
+	                                          \_ HERE
+==== 164: notice: triggering E_WARNING
+
+	printf("---> Constants: %s\n", var_export($class_->getConstants(), TRUE));
+	                                          \_ HERE
+==== 164: Warning: unhandled error E_WARNING at global scope
+165:	
+166:	// Print class properties
+167:	printf("---> Properties: %s\n", var_export($class_->getProperties(), TRUE));
+
+	printf("---> Properties: %s\n", var_export($class_->getProperties(), TRUE));
+	                                           \_ HERE
+==== 167: notice: triggering E_WARNING
+
+	printf("---> Properties: %s\n", var_export($class_->getProperties(), TRUE));
+	                                           \_ HERE
+==== 167: Warning: unhandled error E_WARNING at global scope
+168:	
+169:	// Print class methods
+170:	printf("---> Methods: %s\n", var_export($class_->getMethods(), TRUE));
+
+	printf("---> Methods: %s\n", var_export($class_->getMethods(), TRUE));
+	                                        \_ HERE
+==== 170: notice: triggering E_WARNING
+
+	printf("---> Methods: %s\n", var_export($class_->getMethods(), TRUE));
+	                                        \_ HERE
+==== 170: Warning: unhandled error E_WARNING at global scope
+171:	
+172:	// If this class is instantiable, create an instance
+173:	if ($class_->isInstantiable()) {
+174:	    $counter = $class_->newInstance();
+175:	
+176:	    echo '---> $counter is instance? ';
+177:	    echo $class_->isInstance($counter) ? 'yes' : 'no';
+178:	
+179:	    echo "\n---> new Object_() is instance? ";
+180:	    echo $class_->isInstance(new Object_()) ? 'yes' : 'no';
+181:	}
+182:	
+183:	
+184:	
+185:	#### Example 19.37. Using the ReflectionMethod class
+186:	
+187:	class Counter2
+188:	{
+189:	    private static $c = 0;
+190:	
+191:	    /**
+192:	     * Increment counter
+193:	     *
+194:	     * @final
+195:	     * @static
+196:	     * @access  public
+197:	     * @return  int
+198:	     */
+
+	@final
+	     \_ HERE
+==== 194: ERROR: unknown line-tag @final
+
+	@static
+	      \_ HERE
+==== 195: ERROR: unknown line-tag @static
+199:	    final public static function increment()
+
+	     */
+	       \_ HERE
+==== 198: ERROR: unexpected DocBlock line tag `@access'
+
+	    final public static function increment()
+	                                \_ HERE
+==== 199: ERROR: invalid meta-code or DocBlock @access line-tag to set visibility, use proper language keywords
+200:	    {
+201:	        return ++self::$c;
+202:	    }
+203:	}
+204:	
+205:	// Create an instance of the Reflection_Method class
+206:	$method = new ReflectionMethod('Counter2', 'increment');
+
+	$method = new ReflectionMethod('Counter2', 'increment');
+	                                                        \_ HERE
+==== 206: notice: throwing ReflectionException
+
+	$method = new ReflectionMethod('Counter2', 'increment');
+	                                                        \_ HERE
+==== 206: Warning: uncaught exception ReflectionException at global scope
+207:	
+208:	// Print out basic information
+209:	printf(
+210:	    "===> The %s%s%s%s%s%s%s method '%s' (which is %s)\n" .
+211:	    "     declared in %s\n" .
+212:	    "     lines %d to %d\n" .
+213:	    "     having the modifiers %d[%s]\n",
+214:	        $method->isInternal() ? 'internal' : 'user-defined',
+215:	        $method->isAbstract() ? ' abstract' : '',
+216:	        $method->isFinal() ? ' final' : '',
+217:	        $method->isPublic() ? ' public' : '',
+218:	        $method->isPrivate() ? ' private' : '',
+219:	        $method->isProtected() ? ' protected' : '',
+220:	        $method->isStatic() ? ' static' : '',
+221:	        $method->getName(),
+222:	        $method->isConstructor() ? 'the constructor' : 'a regular method',
+223:	        $method->getFileName(),
+224:	        $method->getStartLine(),
+225:	        $method->getEndline(),
+
+	        $method->getEndline(),
+	                            \_ HERE
+==== 225: ERROR: method	getEndline
+	was declared as
+		ReflectionFunctionAbstract::getEndLine
+	that differs by upper/lower-case letters only
+226:	        $method->getModifiers(),
+227:	        implode(' ', Reflection::getModifierNames($method->getModifiers()))
+228:	);
+229:	
+230:	// Print documentation comment
+231:	printf("---> Documentation:\n %s\n", var_export($method->getDocComment(), TRUE));
+
+	printf("---> Documentation:\n %s\n", var_export($method->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 231: notice: triggering E_WARNING
+
+	printf("---> Documentation:\n %s\n", var_export($method->getDocComment(), TRUE));
+	                                                \_ HERE
+==== 231: Warning: unhandled error E_WARNING at global scope
+232:	
+233:	// Print static variables if existant
+234:	if ($statics= $method->getStaticVariables()) {
+
+	if ($statics= $method->getStaticVariables()) {
+	                                            \_ HERE
+==== 234: ERROR: found expression of type mixed[string], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+235:	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+
+	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+	                                                     \_ HERE
+==== 235: notice: triggering E_WARNING
+
+	    printf("---> Static variables: %s\n", var_export($statics, TRUE));
+	                                                     \_ HERE
+==== 235: Warning: unhandled error E_WARNING at global scope
+236:	}
+237:	
+238:	// Invoke the method
+239:	printf("---> Invokation results in: ");
+240:	var_dump($method->invoke(NULL));
+
+	var_dump($method->invoke(NULL));
+	                               \_ HERE
+==== 240: notice: throwing ReflectionException
+
+	var_dump($method->invoke(NULL));
+	                               \_ HERE
+==== 240: Warning: uncaught exception ReflectionException at global scope
+241:	
+242:	
+243:	
+244:	#### Example 19.38. Using the ReflectionProperty class
+245:	
+246:	class String_
+247:	{
+248:	    public $length  = 5;
+249:	}
+250:	
+251:	// Create an instance of the ReflectionProperty class
+252:	$prop = new ReflectionProperty('String_', 'length');
+
+	$prop = new ReflectionProperty('String_', 'length');
+	                                                    \_ HERE
+==== 252: notice: throwing ReflectionException
+
+	$prop = new ReflectionProperty('String_', 'length');
+	                                                    \_ HERE
+==== 252: Warning: uncaught exception ReflectionException at global scope
+253:	
+254:	// Print out basic information
+255:	printf(
+256:	    "===> The%s%s%s%s property '%s' (which was %s)\n" .
+257:	    "     having the modifiers %s\n",
+258:	        $prop->isPublic() ? ' public' : '',
+259:	        $prop->isPrivate() ? ' private' : '',
+260:	        $prop->isProtected() ? ' protected' : '',
+261:	        $prop->isStatic() ? ' static' : '',
+262:	        $prop->getName(),
+263:	        $prop->isDefault() ? 'declared at compile-time' : 'created at run-time',
+264:	        var_export(Reflection::getModifierNames($prop->getModifiers()), TRUE)
+
+	        var_export(Reflection::getModifierNames($prop->getModifiers()), TRUE)
+	                   \_ HERE
+==== 264: notice: triggering E_WARNING
+
+	        var_export(Reflection::getModifierNames($prop->getModifiers()), TRUE)
+	                   \_ HERE
+==== 264: Warning: unhandled error E_WARNING at global scope
+265:	);
+266:	
+267:	// Create an instance of String_
+268:	$obj= new String_();
+269:	
+270:	// Get current value
+271:	printf("---> Value is: ");
+272:	var_dump($prop->getValue($obj));
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 272: notice: throwing ErrorException
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 272: Warning: uncaught exception ErrorException at global scope
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 272: notice: throwing ReflectionException
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 272: Warning: uncaught exception ReflectionException at global scope
+273:	
+274:	// Change value
+275:	$prop->setValue($obj, 10);
+
+	$prop->setValue($obj, 10);
+	                          \_ HERE
+==== 275: notice: throwing ReflectionException
+
+	$prop->setValue($obj, 10);
+	                          \_ HERE
+==== 275: Warning: uncaught exception ReflectionException at global scope
+276:	printf("---> Setting value to 10, new value is: ");
+277:	var_dump($prop->getValue($obj));
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 277: notice: throwing ErrorException
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 277: Warning: uncaught exception ErrorException at global scope
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 277: notice: throwing ReflectionException
+
+	var_dump($prop->getValue($obj));
+	                               \_ HERE
+==== 277: Warning: uncaught exception ReflectionException at global scope
+278:	
+279:	// Dump object
+280:	var_dump($obj);
+281:	
+282:	
+283:	
+284:	#### Example 19.39. Using the ReflectionExtension class
+285:	
+286:	// Create an instance of the ReflectionProperty class
+287:	$ext = new ReflectionExtension('standard');
+
+	$ext = new ReflectionExtension('standard');
+	                                           \_ HERE
+==== 287: notice: throwing ReflectionException
+
+	$ext = new ReflectionExtension('standard');
+	                                           \_ HERE
+==== 287: Warning: uncaught exception ReflectionException at global scope
+288:	
+289:	// Print out basic information
+290:	printf(
+291:	    "Name        : %s\n" .
+292:	    "Version     : %s\n" .
+293:	    "Functions   : [%d] %s\n" .
+294:	    "Constants   : [%d] %s\n" .
+295:	    "INI entries : [%d] %s\n" .
+296:	    "Classes     : [%d] %s\n",
+297:	        $ext->getName(),
+298:	        $ext->getVersion() ? $ext->getVersion() : 'NO_VERSION',
+
+	        $ext->getVersion() ? $ext->getVersion() : 'NO_VERSION',
+	                            \_ HERE
+==== 298: ERROR: found expression of type string, expected type is boolean. Remember that the empty string "", the string "0" and the NULL string all evaluate to FALSE and any other string evaluates to TRUE.
+299:	        sizeof($ext->getFunctions()),
+300:	        var_export($ext->getFunctions(), TRUE),
+
+	        var_export($ext->getFunctions(), TRUE),
+	                   \_ HERE
+==== 300: notice: triggering E_WARNING
+
+	        var_export($ext->getFunctions(), TRUE),
+	                   \_ HERE
+==== 300: Warning: unhandled error E_WARNING at global scope
+301:	
+302:	        sizeof($ext->getConstants()),
+303:	        var_export($ext->getConstants(), TRUE),
+
+	        var_export($ext->getConstants(), TRUE),
+	                   \_ HERE
+==== 303: notice: triggering E_WARNING
+
+	        var_export($ext->getConstants(), TRUE),
+	                   \_ HERE
+==== 303: Warning: unhandled error E_WARNING at global scope
+304:	
+305:	        sizeof($ext->getINIEntries()),
+306:	        var_export($ext->getINIEntries(), TRUE),
+
+	        var_export($ext->getINIEntries(), TRUE),
+	                   \_ HERE
+==== 306: notice: triggering E_WARNING
+
+	        var_export($ext->getINIEntries(), TRUE),
+	                   \_ HERE
+==== 306: Warning: unhandled error E_WARNING at global scope
+307:	
+308:	        sizeof($ext->getClassNames()),
+309:	        var_export($ext->getClassNames(), TRUE)
+
+	        var_export($ext->getClassNames(), TRUE)
+	                   \_ HERE
+==== 309: notice: triggering E_WARNING
+
+	        var_export($ext->getClassNames(), TRUE)
+	                   \_ HERE
+==== 309: Warning: unhandled error E_WARNING at global scope
+310:	);
+311:	
+312:	
+313:	
+314:	#### Example 19.40. Extending the built-in classes
+315:	
+316:	/**
+317:	 * My Reflection_Method class
+318:	 */
+319:	class My_Reflection_Method extends ReflectionMethod
+320:	{
+321:	    public $visibility = '';
+322:	
+323:	    public function __construct($o, $m)
+
+	    public function __construct($o, $m)
+	                                   \_ HERE
+==== 323: ERROR: undefined type for argument $o. Hint: you may indicate an explicit type (example: `/*.int.*/ $o') or assign a default value (example: `$o=123') or add a DocBlock line tag (example: `@param int $o').
+
+	    public function __construct($o, $m)
+	                                       \_ HERE
+==== 323: ERROR: undefined type for argument $m. Hint: you may indicate an explicit type (example: `/*.int.*/ $m') or assign a default value (example: `$m=123') or add a DocBlock line tag (example: `@param int $m').
+324:	    {
+325:	        parent::__construct($o, $m);
+
+	        parent::__construct($o, $m);
+	                                    \_ HERE
+==== 325: notice: throwing ReflectionException
+
+	        parent::__construct($o, $m);
+	                                    \_ HERE
+==== 325: ERROR: My_Reflection_Method::__construct: exception ReflectionException must be caught or declared to be thrown
+326:	        $this->visibility= Reflection::getModifierNames($this->getModifiers());
+
+	        $this->visibility= Reflection::getModifierNames($this->getModifiers());
+	                                                                               \_ HERE
+==== 326: ERROR: (string) = (string[int]): incompatible types
+327:	    }
+328:	}
+329:	
+330:	/**
+331:	 * Demo class #1
+332:	 *
+333:	 */
+334:	class T {
+335:	    protected function x() {}
+336:	}
+337:	
+338:	/**
+339:	 * Demo class #2
+340:	 *
+341:	 */
+342:	class U extends T {
+343:	    function x() {}
+344:	}
+345:	
+346:	// Print out information
+347:	var_dump(new My_Reflection_Method('U', 'x'));
+348:	
+349:	?>
+==== ?: notice: this package is not a library:
+	Unhandled error E_WARNING at global scope in line 56.
+	Unhandled error E_WARNING at global scope in line 61.
+	Uncaught exception ReflectionException at global scope in line 71.
+	Unhandled error E_WARNING at global scope in line 100.
+	Unhandled error E_WARNING at global scope in line 101.
+	Unhandled error E_WARNING at global scope in line 102.
+	Unhandled error E_WARNING at global scope in line 149.
+	Unhandled error E_WARNING at global scope in line 158.
+	Unhandled error E_WARNING at global scope in line 161.
+	Unhandled error E_WARNING at global scope in line 164.
+	Unhandled error E_WARNING at global scope in line 167.
+	Unhandled error E_WARNING at global scope in line 170.
+	Uncaught exception ReflectionException at global scope in line 206.
+	Unhandled error E_WARNING at global scope in line 231.
+	Unhandled error E_WARNING at global scope in line 235.
+	Uncaught exception ReflectionException at global scope in line 240.
+	Uncaught exception ReflectionException at global scope in line 252.
+	Unhandled error E_WARNING at global scope in line 264.
+	Uncaught exception ErrorException at global scope in line 272.
+	Uncaught exception ReflectionException at global scope in line 272.
+	Uncaught exception ReflectionException at global scope in line 275.
+	Uncaught exception ErrorException at global scope in line 277.
+	Uncaught exception ReflectionException at global scope in line 277.
+	Uncaught exception ReflectionException at global scope in line 287.
+	Unhandled error E_WARNING at global scope in line 300.
+	Unhandled error E_WARNING at global scope in line 303.
+	Unhandled error E_WARNING at global scope in line 306.
+	Unhandled error E_WARNING at global scope in line 309.
+END parsing of 5-reflection.php
+==== ?:?: notice: required module core.php
+==== ?:?: notice: required module file.php
+==== ?:?: notice: required module spl.php
+==== ?:?: notice: required module standard_reflection.php
+Overall test results: 22 errors, 28 warnings.

@@ -1,0 +1,50 @@
+BEGIN parsing of 7-coalesce-operator.php
+1:	<?php
+2:	
+3:	class C { public $p = 1; }
+4:	
+5:	function f(C $c = NULL) {
+6:		$o = $c ?? new C();
+7:		echo ($c ?? new C())->p;
+8:	}
+9:	
+10:	if( 1 ?? 2 );
+
+		$o = $c ?? new C();
+	          \_ HERE
+==== 6: notice: variable $o assigned but never used
+
+	if( 1 ?? 2 );
+	            \_ HERE
+==== 10: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+11:	if( 1 ?? 2.3 );
+
+	if( 1 ?? 2.3 );
+	        \_ HERE
+==== 11: ERROR: `EXPR1 ?? EXPR2': type mismatch: EXPR1 is int, EXPR2 is float
+
+	if( 1 ?? 2.3 );
+	              \_ HERE
+==== 11: ERROR: found expression of type int, expected type is boolean. Remember that 0 evaluates to FALSE, and any other integer value evaluates to TRUE.
+12:	if( array() ?? array() );
+
+	if( array() ?? array() );
+	                        \_ HERE
+==== 12: ERROR: found expression of type mixed[], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+13:	if( array(1) ?? array("a") );
+
+	if( array(1) ?? array("a") );
+	               \_ HERE
+==== 13: ERROR: `EXPR1 ?? EXPR2': type mismatch: EXPR1 is int[int], EXPR2 is string[int]
+
+	if( array(1) ?? array("a") );
+	                            \_ HERE
+==== 13: ERROR: found expression of type int[int], expected type is boolean. Remember that an array with zero elements evaluates to FALSE, and an array with one or more elements evaluates to TRUE.
+14:	
+15:	$name = $_GET['name'] ?? 'name';
+
+	$name = $_GET['name'] ?? 'name';
+	                        \_ HERE
+==== 15: ERROR: `EXPR1 ?? EXPR2': type mismatch: EXPR1 is mixed, EXPR2 is string
+END parsing of 7-coalesce-operator.php
+Overall test results: 7 errors, 0 warnings.

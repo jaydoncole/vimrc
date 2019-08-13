@@ -1,0 +1,13 @@
+Type,Value
+bool(FALSE),FALSE
+bool(TRUE),TRUE
+int(-123),-123
+float(-3.14),-3.14
+time(12:34:56),12:34:56
+date(2015-09-30T12:34:56),2015-09-30T12:34:56
+date(2015-09-30 12:34:56),2015-09-30 12:34:56
+quoted string,"via \"Giusi\" Garibaldi, 1"
+UTF-8 string - no idea of what does it means,Избранная статья - Литургический кодекс
+long text in quotes,"This is a quite
+long text between double-quotes
+spanning several lines.",Field next to the long text.

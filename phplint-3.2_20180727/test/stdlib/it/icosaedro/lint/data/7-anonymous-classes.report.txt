@@ -1,0 +1,178 @@
+BEGIN parsing of 7-anonymous-classes.php
+1:	<?php
+2:	
+3:	// http://www.php.net/manual/en/language.oop5.anonymous.php
+4:	
+5:	interface IF1 {
+6:		function m1();
+7:	}
+8:	
+9:	abstract class AC1 {
+10:		abstract function m2();
+11:	}
+12:	
+13:	$o1 = new class {
+14:		function m0(){ echo __METHOD__, "\n"; }
+15:	};
+16:	
+17:	$o1->m0();
+18:	
+19:	$o2 = new class(1) implements IF1 {
+20:		function m1(){ echo __METHOD__, "\n"; }
+21:	};
+
+	$o2 = new class(1) implements IF1 {
+	               \_ HERE
+==== 19: ERROR: the anonymous class has no contructor, no actual parameters required
+22:	
+23:	$o2->m1();
+24:	
+25:	$o3 = new class(1, 2) extends AC1 {
+26:		/**
+27:		 * @return void
+28:		 */
+29:		function m2(){ echo __METHOD__, "\n"; }
+30:	};
+
+	$o3 = new class(1, 2) extends AC1 {
+	               \_ HERE
+==== 25: ERROR: the anonymous class has no contructor, no actual parameters required
+31:	
+32:	$o3->m2();
+33:	
+34:	$o4 = new class() {
+35:		function __construct(){ echo __METHOD__, "\n"; }
+36:		function m4(){ echo __METHOD__, "\n"; }
+37:	};
+38:	
+39:	$o4->m4();
+40:	
+41:	// Anon class in function context:
+42:	function f() {
+43:		$o = new class {
+44:			function m1(){}
+45:		};
+46:	
+47:		$o->m1();
+48:		return $o;
+49:	}
+50:	
+51:	f()->m1();
+52:	if(f());
+
+	if(f());
+	       \_ HERE
+==== 52: ERROR: found expression of type AnonymousClass#4, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+53:	
+54:	// Anon class in method context:
+55:	class C {
+56:	
+57:		function m3() {
+58:			$o = new class{
+59:				function m4(){}
+60:			};
+61:	
+62:			$o->m4();
+63:			return $o;
+64:		}
+65:	
+66:		function m5(){}
+67:	
+68:	}
+69:	
+70:	$c = new C();
+71:	$c->m3();
+72:	$c->m5();
+73:	$c->m3()->m4();
+74:	if( $c->m3() );
+
+	if( $c->m3() );
+	              \_ HERE
+==== 74: ERROR: found expression of type AnonymousClass#5, expected type is boolean. Remember that an object evaluates to FALSE if it has no properties, and evaluates to TRUE if it has at least one property.
+75:	
+76:	
+77:	
+78:	// ERROR DETECTION -- INVALID PHP 7 CODE FROM HERE ON
+79:	
+80:	
+81:	$o5 = new class { // access to non-public ctor
+82:		private function __construct(){}
+83:	};
+
+	};
+	  \_ HERE
+==== 83: ERROR: access forbidden to private method AnonymousClass#6::__construct
+84:	
+85:	$o6 = new class(1) {
+86:		function __construct(int $i){}
+87:	};
+
+		function __construct(int $i){}
+	                                   \_ HERE
+==== 86: notice: variable $i assigned but never used
+88:	
+89:	$o7 = new class() { // missing mandatory param
+90:		function __construct(int $i){}
+91:	};
+
+		function __construct(int $i){}
+	                                   \_ HERE
+==== 90: notice: variable $i assigned but never used
+92:	
+93:	$o8 = new class(1, 2) {
+94:		function __construct(int $i /*. , args .*/){}
+95:	};
+
+		function __construct(int $i /*. , args .*/){}
+	                                   \_ HERE
+==== 94: notice: variable $i assigned but never used
+96:	
+97:	$o9 = new class(1, 2, 3) {
+98:		function __construct(int $i, int ...$iii){}
+99:	};
+
+		function __construct(int $i, int ...$iii){}
+	                                                \_ HERE
+==== 98: notice: variable $iii assigned but never used
+
+		function __construct(int $i, int ...$iii){}
+	                                   \_ HERE
+==== 98: notice: variable $i assigned but never used
+100:	
+101:	$o10 = new class(1, 2, 3, "aa") {  // invalid variadic param
+102:		function __construct(int $i, int ...$iii){}
+103:	};
+
+		function __construct(int $i, int ...$iii){}
+	                                                \_ HERE
+==== 102: notice: variable $iii assigned but never used
+
+		function __construct(int $i, int ...$iii){}
+	                                   \_ HERE
+==== 102: notice: variable $i assigned but never used
+
+	$o10 = new class(1, 2, 3, "aa") {  // invalid variadic param
+	                               \_ HERE
+==== 101: ERROR: expected int but found string
+104:	
+105:	$o11 = new class("a") { // invalid type
+106:		function __construct(int $i){}
+107:	};
+
+		function __construct(int $i){}
+	                                   \_ HERE
+==== 106: notice: variable $i assigned but never used
+
+	$o11 = new class("a") { // invalid type
+	                     \_ HERE
+==== 105: ERROR: expected int but found string
+108:	
+109:	$o12 = new class() {
+110:		function __construct($i = 0){}
+111:	};
+
+		function __construct($i = 0){}
+	                               \_ HERE
+==== 110: notice: variable $i assigned but never used
+END parsing of 7-anonymous-classes.php
+Overall test results: 7 errors, 0 warnings.

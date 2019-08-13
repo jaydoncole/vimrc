@@ -1,0 +1,60 @@
+BEGIN parsing of 7-exceptions-usage.php
+1:	<?php
+2:	
+3:	/*. require_module 'core'; .*/
+4:	
+5:	error_reporting(-1);
+6:	
+7:	/*
+8:	 * Classes in user's code cannot implement directly or indirectly Throwable
+9:	 * without also extending Error. Interfaces may "extend" Throwable.
+10:	 */
+11:	
+12:	interface if1 extends Throwable{}
+13:	
+14:	class c2 implements if1 {}
+
+	class c2 implements if1 {}
+	         \_ HERE
+==== 14: ERROR: class c2 cannot implement interface Throwable directly, extend Exception or Error instead
+15:	// --> PHP Fatal error:  Class c2 cannot implement interface Throwable, extend Exception or Error instead
+16:	
+17:	class c3 implements Throwable {}
+
+	class c2 implements if1 {}
+	         \_ HERE
+==== 14: ERROR: missing implementations in c2:
+	Throwable::getMessage
+	Throwable::getFile
+	Throwable::getTraceAsString
+	Throwable::getTrace
+	Throwable::getCode
+	Throwable::getPrevious
+	Throwable::__toString
+	Throwable::getLine
+
+	class c3 implements Throwable {}
+	         \_ HERE
+==== 17: ERROR: class c3 cannot implement interface Throwable directly, extend Exception or Error instead
+18:	// --> PHP Fatal error:  Class c3 cannot implement interface Throwable, extend Exception or Error instead
+19:	
+20:	class c4 extends Error implements if1 {}
+
+	class c3 implements Throwable {}
+	         \_ HERE
+==== 17: ERROR: missing implementations in c3:
+	Throwable::getMessage
+	Throwable::getFile
+	Throwable::getTraceAsString
+	Throwable::getTrace
+	Throwable::getCode
+	Throwable::getPrevious
+	Throwable::__toString
+	Throwable::getLine
+21:	// --> ok
+22:	
+23:	class C5 extends Error {}
+24:	// ok
+END parsing of 7-exceptions-usage.php
+==== ?:?: notice: required module core.php
+Overall test results: 4 errors, 0 warnings.

@@ -1,0 +1,36 @@
+BEGIN parsing of 5-list.php
+1:	<?php
+2:	
+3:	list($x,$y) = array();
+
+	list($x,$y) = array();
+	    \_ HERE
+==== 3: ERROR: list(...) is unimplemented
+4:	
+5:	// $x,$y are now assigned, but of unknown type:
+6:	if($x && $y);
+7:	
+8:	// Assigning non-array:
+9:	list($x,$y) = 1;
+
+	list($x,$y) = 1;
+	    \_ HERE
+==== 9: ERROR: list(...) is unimplemented
+
+	list($x,$y) = 1;
+	                \_ HERE
+==== 9: ERROR: invalid type assigned to list(): int
+10:	
+11:	// Assigning unknown:
+12:	list($x,) = xxxx;
+
+	list($x,) = xxxx;
+	    \_ HERE
+==== 12: ERROR: list(...) is unimplemented
+
+	list($x,) = xxxx;
+	                 \_ HERE
+==== 12: ERROR: unknown constant xxxx
+13:	
+END parsing of 5-list.php
+Overall test results: 5 errors, 0 warnings.

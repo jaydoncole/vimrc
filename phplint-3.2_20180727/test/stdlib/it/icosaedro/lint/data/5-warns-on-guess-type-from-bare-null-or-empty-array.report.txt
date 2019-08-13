@@ -1,0 +1,46 @@
+BEGIN parsing of 5-warns-on-guess-type-from-bare-null-or-empty-array.php
+1:	<?php
+2:	
+3:	// Detect incomplete type guessing from bare null and empty array().
+4:	
+5:	$s1 = null;
+
+	$s1 = null;
+	           \_ HERE
+==== 5: ERROR: cannot guess variable's type from bare null value.
+	Required either explicit type declaration, example:
+		/*. string .*/ $x = NULL;
+	or formal typecast on bare null value, example:
+		$x = /*. (string) .*/ NULL;
+6:	
+7:	$s2 = /*. (string) .*/ null;
+8:	
+9:	$s2 = null; // known type
+10:	
+11:	/*. string .*/ $s3 = null;
+12:	
+13:	/** @var string */ $s4 = null;
+14:	
+15:	
+16:	$a1 = array();
+
+	$a1 = array();
+	              \_ HERE
+==== 16: notice: guessed variable's type mixed[] from bare empty array value.
+	Recommended either type declaration, example:
+		/*. string[int] .*/ $x = array(); // array of strings with int index
+	or formal typecast on empty array, examples:
+		$x = /*. (MyClass[string]) .*/ array(); // associative array of MyClass objects
+		$x = /*. (float[int][int]) .*/ array(); // matrix of floating-point numbers
+17:	
+18:	$a2 = /*. (string[int]) .*/ array();
+19:	
+20:	$a2 = null; // known type
+21:	
+22:	$a2 = array(); // known type
+23:	
+24:	/*. string[int] .*/ $a3 = array();
+25:	
+26:	/** @var string[int] */ $a4 = [];
+END parsing of 5-warns-on-guess-type-from-bare-null-or-empty-array.php
+Overall test results: 1 errors, 0 warnings.

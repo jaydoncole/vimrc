@@ -1,0 +1,12 @@
+BEGIN parsing of 7-unicode-escape.php
+1:	<?php
+2:	
+3:	$s = "\u{0} \u{0001} \u{10fffF}";
+4:	
+5:	$t = <<< EOT
+6:		\u{abcde}
+7:	EOT;
+8:	
+9:	const C = "\u{123}";
+END parsing of 7-unicode-escape.php
+Overall test results: 0 errors, 0 warnings.

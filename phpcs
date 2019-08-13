@@ -1,0 +1,2 @@
+#!/bin/sh
+php /home/Auxiant.local/jcole/.vim/phpcs.phar

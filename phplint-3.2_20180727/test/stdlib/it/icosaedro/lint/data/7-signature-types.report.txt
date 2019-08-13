@@ -1,0 +1,59 @@
+BEGIN parsing of 7-signature-types.php
+1:	<?php
+2:	
+3:	/*. require_module 'core'; .*/
+4:	
+5:	declare(ticks=3);
+6:	declare(encoding="xxx");
+
+	declare(encoding="xxx");
+	                       \_ HERE
+==== 6: Warning: may raise E_WARNING if Zend multibyte feature is turned off by settings. There is no way to prevent this warning under PHPLint; simply, do not use this directive.
+7:	declare(strict_types=0);
+8:	
+9:	error_reporting(-1);
+10:	
+11:	class MyClass {}
+12:	
+13:	// old type aliases are still here in PHP 7, but not allowed in scalar type decls!
+14:	echo (integer) 88.8;
+15:	echo (double) 1;
+16:	echo (real) 1;
+17:	
+18:	/**
+19:	 * @param bool $b
+20:	 * @param int $i
+21:	 * @param float $f
+22:	 * @param string $s
+23:	 * @param MyClass $o
+24:	 * @return double
+25:	 */
+26:	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+27:	{
+28:		return 3;
+29:	}
+30:	
+31:	var_dump(f(FALSE, 123, 1.2, "abc", new MyClass()));
+
+	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+	                                                           \_ HERE
+==== 26: notice: variable $o assigned but never used
+
+	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+	                                               \_ HERE
+==== 26: notice: variable $s assigned but never used
+
+	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+	                                    \_ HERE
+==== 26: notice: variable $f assigned but never used
+
+	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+	                          \_ HERE
+==== 26: notice: variable $i assigned but never used
+
+	function f(bool $b, int $i, float $f, string $s, MyClass $o): float
+	                  \_ HERE
+==== 26: notice: variable $b assigned but never used
+END parsing of 7-signature-types.php
+==== ?:?: notice: required module core.php
+Overall test results: 0 errors, 1 warnings.
