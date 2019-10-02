@@ -27,29 +27,15 @@ Bundle 'junegunn/fzf.vim'
 Bundle 'powerline/powerline-fonts'
 Bundle 'dbakker/vim-projectroot'
 Bundle 'w0rp/ale'
-"Bundle 'ajh17/VimCompletesMe'
 Bundle 'skywind3000/vim-preview'
 Bundle 'mattn/emmet-vim'
 Bundle 'tpope/vim-surround'
-Bundle  'ervandew/supertab'
 Bundle 'posva/vim-vue'
 Bundle 'alvan/vim-closetag'
 Bundle 'Yggdroot/indentLine'
-"Bundle 'Shougo/deoplete.nvim'
+Bundle 'yssl/QFEnter'
+Bundle 'zxqfl/tabnine-vim'
 
-"Bundle 'scrooloose/syntastic.git'
-"Bundle 'benmills/vimux'
-"Bundle 'jelera/vim-javascript-syntax'
-"Bundle 'KabbAmine/vCoolor.vim'
-
-
-"Bundle 'vim-scripts/AutoComplPop'
-"Bundle 'phpactor/phpactor'
-"Bundle 'tobyS/vmustache'
-"Bundle 'tobyS/pdv'
-"Bundle 'junegunn/goyo.vim'
-"Bundle 'junegunn/limelight.vim'
-"Bundle 'shawncplus/phpcomplete.vim'
 "// Breaks PHP ctrl+* support
 "Bundle 'pangloss/vim-javascript'
 "// Breaks color matching
@@ -71,31 +57,9 @@ let NERDTreeDirArrows = 1
 nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 let NERDTreeAutoDeleteBuffer = 1
 
-"set completeopt=longest,menuone
 set completeopt=menu,menuone,preview,noselect,noinsert
 
 autocmd BufEnter * :syntax sync fromstart
-
-"let g:deoplete#enable_at_startup=1
-
-"Goyo
-let g:goyo_height="100%"
-function! s:goyo_enter()
-    set wrap 
-    set linebreak 
-    set nolist 
-    set spell spelllang=en_us  
-    set showcmd
-    Limelight
-    silent !tmux set status on
-endfunction
-
-function! s:goyo_leave()
-    set nolinebreak 
-    Limelight!
-endfunction
-autocmd! User GoyoEnter call <SID>goyo_enter()
-autocmd! User GoyoLeave call <SID>goyo_leave()
 
 "NerdTree
 let g:NERDTreeHijackNetrw=0
@@ -115,7 +79,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-
+set wrap linebreak nolist
 " UI options
 set history=50
 set ruler
@@ -185,9 +149,6 @@ let g:tagbar_phpctags_member_limit = '512M'
 :nmap <f9> :TlistOpen<CR>
 
 
-let g:phpcomplete_min_num_of_chars_for_namespace_completion = 2
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabContextDefaultCompletionType = "<C-X><C-O>"
 let g:buffergator_viewport_split_policy = "N"
 
 map <Leader>s <Plug>(easymotion-overwin-f)
@@ -327,36 +288,17 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 set completeopt+=preview
-"let g:syntastic_always_populate_loc_list = 0
-"let g:syntastic_auto_loc_list = 0
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 1
-"let g:syntastic_php_checkers = ["php", "phpcs", "phpmd"]
-"let g:syntastic_aggregate_errors = 1
-"let g:syntastic_debug = 0
-""let g:syntastic_php_checkers = ["php", "phpcs", "phpmd", "phpstan", "phplint"]
-""let g:syntastic_javascript_checkers = ['eslint']
-""let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-"let g:ale_close_preview_on_insert = 1
 let g:ale_completion_enabled = 0
 let g:ale_lint_on_insert_leave = 1
 let g:ale_php_langserver_use_global = 1
 let g:ale_php_langserver_executable = $HOME.'/projects/PLS/vendor/felixfbecker/language-server/bin/php-language-server.php'
 let g:ale_completion_delay = 200
 
-
 let g:pdv_template_dir = $HOME . "/.vim/bundle/pdv/templates_snip"
 map <Leader>p :call pdv#DocumentCurrentLine()<CR>
 
 let delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_expand_cr = 0
-"let g:TTrCodeAssistor_AutoStart = 1
-
-
-"Make YouCompleteMe not auto complete for now
-"let g:ycm_filetype_specific_completion_to_disable = {
-"\ 'php': 1
-"\}
 
 "Docker debug
 function! SetupDebug()
@@ -379,13 +321,8 @@ function! <SID>StripTrailingWhitespace()
     call cursor(l, c)
 endfunction
 nmap <silent> <Leader><space> :call <SID>StripTrailingWhitespace()<CR>
-"autocmd BufWritePre * :call <SID>StripTrailingWhitespace()
 nmap <leader>p <Plug>yankstack_substitute_older_paste
 nmap <leader>P <Plug>yankstack_substitute_newer_paste
-
-
-"VimCompletesMe
-autocmd FileType php let b:vcm_tab_complete = 'tags'
 
 "Automatically try to determine the proejct root and set it
 function! <SID>AutoProjectRootCD()
