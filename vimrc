@@ -41,6 +41,13 @@ Bundle 'zxqfl/tabnine-vim'
 "// Breaks color matching
 "Bundle 'gko/vim-coloresque'
 
+" Writing Mode
+Bundle "junegunn/goyo.vim"
+Bundle "junegunn/limelight.vim"
+Bundle "reedes/vim-pencil"
+
+
+
 call vundle#end()
 
 filetype plugin indent on
@@ -336,3 +343,23 @@ function! <SID>AutoProjectRootCD()
 endfunction
 
 autocmd BufEnter * call <SID>AutoProjectRootCD()
+
+"Writing mode
+function! s:goyo_enter()
+    Limelight
+    SoftPencil
+    set spell spelllang=en_us
+    colorscheme xoria256
+endfunction
+
+function! s:goyo_leave()
+    Limelight!
+    NoPencil
+    set nospell
+endfunction
+
+let g:goyo_width=175
+let g:goyo_height="95%"
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
